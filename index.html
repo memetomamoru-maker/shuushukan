@@ -160,7 +160,7 @@ display:flex;align-items:center;gap:10px;}
 .hero-scroll{
   position:absolute;bottom:0;left:50%;
   transform:translateX(-50%);
-  width:40px;
+  width:0;overflow:visible;
   z-index:5;
   display:flex;flex-direction:column;align-items:center;gap:0;
   opacity:0;animation:fadeUp .6s ease 1.4s forwards;
@@ -172,6 +172,8 @@ display:flex;align-items:center;gap:10px;}
   color:rgba(245,240,232,.6);
   margin-bottom:6px;white-space:nowrap;
   display:block;
+  /* letter-spacing は最後の文字後にも余白を作るので、半分戻して視覚的中央を合わせる */
+  transform:translateX(calc(.28em / 2));
 }
 .scroll-track{
   width:1px;height:56px;background:rgba(201,168,76,.25);
@@ -561,6 +563,12 @@ footer{
   .hero-h1{font-size:clamp(24px,9vw,34px);}
 }
 
+/* ジャンルタグ：ジャンルごとのアクセントカラー */
+.bs-genre-tag[data-genre="junbungaku"]  { color:rgba(201,160,76,.9);  border-color:rgba(201,160,76,.4); }
+.bs-genre-tag[data-genre="tantei"]      { color:rgba(120,160,210,.9); border-color:rgba(120,160,210,.4); }
+.bs-genre-tag[data-genre="tanbi"]       { color:rgba(210,100,130,.9); border-color:rgba(210,100,130,.4); }
+.bs-genre-tag[data-genre="gensou"]      { color:rgba(100,190,130,.9); border-color:rgba(100,190,130,.4); }
+
 /* mock内部はスクリーンリーダーから隠す */
 .stack-card .screen{pointer-events:none;}
 .stack-card .screen *{pointer-events:none;}
@@ -907,9 +915,9 @@ footer{
              tabindex="0" role="button" aria-label="文学冒頭のサンプルを切り替え（クリックまたはEnter）">
 <div class="stack-card">
   <div class="screen" aria-hidden="true">
-    <div class="bs-wrap">
+    <div class="bs-wrap" style="background:linear-gradient(160deg,#1c1408,#2e200f,#1c1408);">
       <div class="bs-header">
-        <div class="bs-genre-tag">純文学</div>
+        <div class="bs-genre-tag" data-genre="junbungaku">純文学</div>
         <div class="bs-header-icons">
           <div class="bs-ico">📚</div>
           <div class="bs-ico">≡</div>
@@ -934,9 +942,9 @@ footer{
 </div>
 <div class="stack-card">
   <div class="screen" aria-hidden="true">
-    <div class="bs-wrap">
+    <div class="bs-wrap" style="background:linear-gradient(160deg,#080d18,#111828,#080d18);">
       <div class="bs-header">
-        <div class="bs-genre-tag">探偵・推理</div>
+        <div class="bs-genre-tag" data-genre="tantei">探偵・推理</div>
         <div class="bs-header-icons">
           <div class="bs-ico">📚</div>
           <div class="bs-ico">≡</div>
@@ -961,9 +969,9 @@ footer{
 </div>
 <div class="stack-card">
   <div class="screen" aria-hidden="true">
-    <div class="bs-wrap">
+    <div class="bs-wrap" style="background:linear-gradient(160deg,#180810,#2a1020,#180810);">
       <div class="bs-header">
-        <div class="bs-genre-tag">耽美・随筆</div>
+        <div class="bs-genre-tag" data-genre="tanbi">耽美・随筆</div>
         <div class="bs-header-icons">
           <div class="bs-ico">📚</div>
           <div class="bs-ico">≡</div>
@@ -988,9 +996,9 @@ footer{
 </div>
 <div class="stack-card">
   <div class="screen" aria-hidden="true">
-    <div class="bs-wrap">
+    <div class="bs-wrap" style="background:linear-gradient(160deg,#081410,#10231a,#081410);">
       <div class="bs-header">
-        <div class="bs-genre-tag">幻想・童話</div>
+        <div class="bs-genre-tag" data-genre="gensou">幻想・童話</div>
         <div class="bs-header-icons">
           <div class="bs-ico">📚</div>
           <div class="bs-ico">≡</div>
