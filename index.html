@@ -9,12 +9,12 @@
 <meta property="og:title" content="収集館シリーズ">
 <meta property="og:description" content="スワイプするたびに、世界が広がる。名画収集館・冒頭収集館。">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://meiga.vercel.app">
-<meta property="og:image" content="https://meiga.vercel.app/ogp.jpg">
+<meta property="og:url" content="https://shuushukan.vercel.app">
+<meta property="og:image" content="https://shuushukan.vercel.app/ogp.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="収集館シリーズ">
 <meta name="twitter:description" content="スワイプするたびに、世界が広がる。">
-<meta name="twitter:image" content="https://meiga.vercel.app/ogp.jpg">
+<meta name="twitter:image" content="https://shuushukan.vercel.app/ogp.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@500;700;800&display=swap" rel="stylesheet">
@@ -239,7 +239,7 @@ display:flex;align-items:center;gap:10px;}
 .app-visual{
   position:relative;overflow:hidden;
   display:flex;align-items:center;justify-content:center;
-  padding:72px 40px;min-height:760px;
+  padding:72px 40px;min-height:680px;
   background:var(--ink-mid);
 }
 .app-visual-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.07;}
@@ -248,33 +248,35 @@ display:flex;align-items:center;gap:10px;}
    CARD STACK
 ════════════════════════════ */
 .card-stack{
-  position:relative;width:340px;z-index:2;cursor:pointer;
+  position:relative;width:260px;height:560px;z-index:2;cursor:pointer;
+  overflow:visible;
 }
 .stack-card{
-  position:absolute;top:0;left:0;width:340px;
+  position:absolute;top:0;left:0;width:260px;height:560px;
   background:#1e1b16;border-radius:40px;padding:10px;
   box-shadow:0 0 0 1px rgba(201,168,76,.2),0 32px 64px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.04);
   transform-origin:center bottom;
   transition:transform .5s var(--ease),opacity .5s var(--ease),box-shadow .3s;
-  will-change:transform;
+  overflow:hidden;
 }
 .stack-card::before{
   content:'';position:absolute;
   top:16px;left:50%;transform:translateX(-50%);
-  width:80px;height:22px;
-  background:#0d0b08;border-radius:0 0 14px 14px;z-index:10;
+  width:60px;height:18px;
+  background:#0d0b08;border-radius:0 0 12px 12px;z-index:10;
 }
-.stack-card .screen{aspect-ratio:9/19.5;display:flex;
+.stack-card .screen{
+  width:100%;height:100%;
+  display:flex;
   border-radius:32px;overflow:hidden;
-  height:100%;
-  }
+}
 
 /* 初期配置：最後の3枚だけ見せる */
-.stack-card{opacity:0;transform:rotate(8deg) translateX(52px) translateY(14px) scale(.87);z-index:1;}
-.stack-card:nth-last-child(n+2):nth-last-child(-n+4){opacity:.5;z-index:2;transform:rotate(6deg) translateX(38px) translateY(10px) scale(.91);}
-.stack-card:nth-last-child(n+2):nth-last-child(-n+3){opacity:.75;z-index:3;transform:rotate(3deg) translateX(18px) translateY(5px) scale(.96);}
+.stack-card{opacity:0;transform:rotate(8deg) translateX(40px) translateY(14px) scale(.87);z-index:1;}
+.stack-card:nth-last-child(n+2):nth-last-child(-n+4){opacity:.5;z-index:2;transform:rotate(6deg) translateX(28px) translateY(10px) scale(.91);}
+.stack-card:nth-last-child(n+2):nth-last-child(-n+3){opacity:.75;z-index:3;transform:rotate(3deg) translateX(14px) translateY(5px) scale(.96);}
 .stack-card:last-child{opacity:1;z-index:4;transform:rotate(0) translateX(0) translateY(0) scale(1);}
-#stack-meiga.card-stack:hover .stack-card:last-child{transform:rotate(-1.5deg) translateX(-8px) translateY(-8px) scale(1.01);box-shadow:0 0 0 1px rgba(201,168,76,.38),0 48px 88px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06);}
+#stack-meiga.card-stack:hover .stack-card:last-child{transform:rotate(-1.5deg) translateX(-6px) translateY(-6px) scale(1.01);box-shadow:0 0 0 1px rgba(201,168,76,.38),0 48px 88px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06);}
 
 .swipe-hint{
   position:absolute;bottom:-28px;left:0;
@@ -320,15 +322,16 @@ display:flex;align-items:center;gap:10px;}
   color:rgba(30,21,8,.4);font-style:italic;
 }
 .ms-canvas{
-  flex:1;display:flex;align-items:center;justify-content:center;
+  flex:1;min-height:0;display:flex;align-items:center;justify-content:center;
   padding:12px 20px;overflow:hidden;
 }
 .ms-frame-outer{
   width:100%;
-  box-shadow:3px 5px 14px rgba(0,0,0,.3),0 0 0 8px #1a1208,0 0 0 9px #2a2010;
+  max-height:100%;
+  box-shadow:3px 5px 14px rgba(0,0,0,.3),0 0 0 6px #1a1208,0 0 0 7px #2a2010;
 }
 .ms-frame-inner{overflow:hidden;}
-.ms-img{width:100%;display:block;object-fit:cover;aspect-ratio:3/4;}
+.ms-img{width:100%;display:block;object-fit:cover;aspect-ratio:3/4;max-height:340px;}
 .ms-footer{
   background:#1e1508;padding:9px 14px;
   display:flex;align-items:center;justify-content:space-between;
@@ -380,20 +383,23 @@ display:flex;align-items:center;gap:10px;}
 .bs-body{
   flex:1;overflow:hidden;
   display:flex;
+  min-height:0;
   padding:12px 16px 12px 18px;
   position:relative;
 }
 .bs-text-area{
+  -webkit-writing-mode:vertical-rl;
   writing-mode:vertical-rl;
+  text-orientation:mixed;
   color:rgba(240,228,210,.88);
   font-size:10.5px;
   line-height:2;
   letter-spacing:.12em;
   height:100%;
+  width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
   font-weight:300;
-  flex:1;
 }
 .bs-img{
   width:100%;
@@ -504,12 +510,16 @@ footer{
   .nav{padding:0 32px;}
   .container{padding:0 40px;}
   .intro{padding:72px 40px;grid-template-columns:1fr;gap:40px;}
-  .app-visual{padding:56px 32px;min-height:640px;}
+  .app-visual{padding:56px 48px;min-height:640px;}
   .app-text{padding:56px 40px;}
   .app-sec.rev .app-text{padding:56px 40px;}
-  .card-stack{width:280px;}
-  .stack-card{width:260px;}
-  .stack-card .screen{}
+  .card-stack{width:240px;height:500px;}
+  .stack-card{width:240px;height:500px;}
+  /* 影が app-visual に切られないよう tilt offset を抑える */
+  .stack-card{transform:rotate(8deg) translateX(32px) translateY(12px) scale(.87);}
+  .stack-card:nth-last-child(n+2):nth-last-child(-n+4){transform:rotate(6deg) translateX(22px) translateY(8px) scale(.91);}
+  .stack-card:nth-last-child(n+2):nth-last-child(-n+3){transform:rotate(3deg) translateX(11px) translateY(4px) scale(.96);}
+  .stack-card:last-child{transform:rotate(0) translateX(0) translateY(0) scale(1);}
   .gem-row{padding:40px;}
   footer{padding:40px;}
 }
@@ -532,9 +542,8 @@ footer{
   .app-visual{min-height:500px;padding:48px 20px;order:1;}
   .app-text{padding:48px 20px !important;border-left:none !important;border-right:none !important;border-top:1px solid var(--border);order:2;}
   .app-sec.rev .app-text{order:2;}
-  .card-stack{width:240px;height:500px;}
-  .stack-card{width:240px;}
-  .stack-card .screen{}
+  .card-stack{width:220px;height:460px;}
+  .stack-card{width:220px;height:460px;}
   .app-h2{font-size:28px;}
   .app-body{font-size:13px;max-width:100%;}
   .feat li{font-size:12px;padding:10px 0;}
@@ -552,18 +561,18 @@ footer{
   .hero-h1{font-size:clamp(24px,9vw,34px);}
 }
 
-/* 冒頭：傾きなし・フェードスライド表示 */
+/* mock内部はスクリーンリーダーから隠す */
+.stack-card .screen{pointer-events:none;}
+.stack-card .screen *{pointer-events:none;}
 #stack-boutou .stack-card{
-  transform:none !important;
-  opacity:0 !important;
-  transition:opacity .35s ease, transform .35s ease !important;
+  transform:none;
+  opacity:0;
 }
-#stack-boutou .stack-card:last-child{
-  opacity:1 !important;
+#stack-boutou .stack-card[data-active]{
+  opacity:1;
   z-index:4;
 }
-#stack-boutou.card-stack:hover .stack-card:last-child{
-  transform:none !important;
+#stack-boutou.card-stack:hover .stack-card[data-active]{
   box-shadow:0 0 0 1px rgba(201,168,76,.38),0 52px 96px rgba(0,0,0,.8);
 }
 
@@ -680,9 +689,10 @@ footer{
     <div class="app-wrap">
       <div class="app-visual">
         <div class="app-visual-bg" style="background-image:url('pearl_bg.jpg')"></div>
-        <div class="card-stack reveal" id="stack-meiga">
+        <div class="card-stack reveal" id="stack-meiga"
+             tabindex="0" role="button" aria-label="名画のサンプルを切り替え（クリックまたはEnter）">
 <div class="stack-card">
-  <div class="screen">
+  <div class="screen" aria-hidden="true">
     <div class="ms-wrap">
       <div class="ms-header">
         <span class="ms-app-name">名画収集館</span>
@@ -716,7 +726,7 @@ footer{
   </div>
 </div>
 <div class="stack-card">
-  <div class="screen">
+  <div class="screen" aria-hidden="true">
     <div class="ms-wrap">
       <div class="ms-header">
         <span class="ms-app-name">名画収集館</span>
@@ -750,7 +760,7 @@ footer{
   </div>
 </div>
 <div class="stack-card">
-  <div class="screen">
+  <div class="screen" aria-hidden="true">
     <div class="ms-wrap">
       <div class="ms-header">
         <span class="ms-app-name">名画収集館</span>
@@ -784,7 +794,7 @@ footer{
   </div>
 </div>
 <div class="stack-card">
-  <div class="screen">
+  <div class="screen" aria-hidden="true">
     <div class="ms-wrap">
       <div class="ms-header">
         <span class="ms-app-name">名画収集館</span>
@@ -818,7 +828,7 @@ footer{
   </div>
 </div>
 <div class="stack-card">
-  <div class="screen">
+  <div class="screen" aria-hidden="true">
     <div class="ms-wrap">
       <div class="ms-header">
         <span class="ms-app-name">名画収集館</span>
@@ -893,9 +903,10 @@ footer{
     <div class="app-wrap">
       <div class="app-visual">
         <div class="app-visual-bg" style="background-image:url('silhouette_bg.jpg')"></div>
-        <div class="card-stack reveal" id="stack-boutou">
+        <div class="card-stack reveal" id="stack-boutou"
+             tabindex="0" role="button" aria-label="文学冒頭のサンプルを切り替え（クリックまたはEnter）">
 <div class="stack-card">
-  <div class="screen">
+  <div class="screen" aria-hidden="true">
     <div class="bs-wrap">
       <div class="bs-header">
         <div class="bs-genre-tag">純文学</div>
@@ -922,7 +933,7 @@ footer{
   </div>
 </div>
 <div class="stack-card">
-  <div class="screen">
+  <div class="screen" aria-hidden="true">
     <div class="bs-wrap">
       <div class="bs-header">
         <div class="bs-genre-tag">探偵・推理</div>
@@ -949,7 +960,7 @@ footer{
   </div>
 </div>
 <div class="stack-card">
-  <div class="screen">
+  <div class="screen" aria-hidden="true">
     <div class="bs-wrap">
       <div class="bs-header">
         <div class="bs-genre-tag">耽美・随筆</div>
@@ -976,7 +987,7 @@ footer{
   </div>
 </div>
 <div class="stack-card">
-  <div class="screen">
+  <div class="screen" aria-hidden="true">
     <div class="bs-wrap">
       <div class="bs-header">
         <div class="bs-genre-tag">幻想・童話</div>
@@ -1071,54 +1082,114 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 /* CARD STACK */
 function initStack(el) {
   const isBoutou = el.id === 'stack-boutou';
-  el.addEventListener('click', () => {
+  let isAnimating = false;
+
+  /* 冒頭：初期アクティブカードを設定 */
+  if(isBoutou) {
+    const cards = el.querySelectorAll('.stack-card');
+    if(cards.length) cards[0].setAttribute('data-active', '');
+  }
+
+  function advance() {
+    if(isAnimating) return;           /* 連打ガード */
+    isAnimating = true;
+
     const cards = Array.from(el.querySelectorAll('.stack-card'));
-    const top = cards[cards.length - 1];
 
     if(isBoutou) {
-      /* 冒頭：フェードアウト→移動→フェードイン */
-      top.style.transition = 'opacity .25s ease, transform .25s ease';
-      top.style.opacity = '0';
-      top.style.transform = 'translateX(-24px)';
-      setTimeout(() => {
-        el.insertBefore(top, cards[0]);
-        top.style.transition = 'none';
-        top.style.transform = 'translateX(24px)';
-        top.style.opacity = '0';
-        top.style.zIndex = '1';
-        const allCards = Array.from(el.querySelectorAll('.stack-card'));
-        const newTop = allCards[allCards.length - 1];
-        newTop.style.transition = 'none';
-        newTop.style.opacity = '0';
-        newTop.style.zIndex = '4';
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          newTop.style.transition = 'opacity .3s ease, transform .3s ease';
-          newTop.style.opacity = '1';
-          newTop.style.transform = 'none';
-        }));
-      }, 260);
-    } else {
-      /* 名画：回転しながら左へ */
-      top.style.transition = 'transform .45s cubic-bezier(.22,1,.36,1), opacity .3s';
-      top.style.transform = 'rotate(-12deg) translateX(-130%) translateY(-8%) scale(.95)';
-      top.style.opacity = '0';
+      /* ── 冒頭：outgoing/incoming 同時クロスフェード ── */
+      const outCard = el.querySelector('.stack-card[data-active]');
+      if(!outCard){ isAnimating = false; return; }
 
-      setTimeout(() => {
+      const idx     = cards.indexOf(outCard);
+      const inCard  = cards[(idx + 1) % cards.length];
+
+      /* 全カードの inline z-index をリセット */
+      cards.forEach(c => { c.style.zIndex = ''; });
+
+      /* incoming を下に潜らせてから表示準備 */
+      inCard.style.transition  = 'none';
+      inCard.style.opacity     = '0';
+      inCard.style.transform   = 'translateX(20px)';
+      inCard.style.zIndex      = '3';
+      inCard.style.willChange  = 'opacity, transform';
+
+      outCard.style.zIndex     = '4';
+      outCard.style.willChange = 'opacity, transform';
+
+      /* 同フレームでクロスフェード開始 */
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        /* outgoing */
+        outCard.style.transition = 'opacity .28s ease, transform .28s ease';
+        outCard.style.opacity    = '0';
+        outCard.style.transform  = 'translateX(-20px)';
+
+        /* incoming */
+        inCard.style.transition  = 'opacity .28s ease, transform .28s ease';
+        inCard.style.opacity     = '1';
+        inCard.style.transform   = 'none';
+
+        /* transitionend で後処理（outCard の方を監視） */
+        outCard.addEventListener('transitionend', function cleanup(e) {
+          if(e.propertyName !== 'opacity') return;
+          outCard.removeEventListener('transitionend', cleanup);
+
+          outCard.removeAttribute('data-active');
+          outCard.style.willChange = '';
+          outCard.style.zIndex     = '';
+
+          inCard.setAttribute('data-active', '');
+          inCard.style.willChange  = '';
+          inCard.style.zIndex      = '';
+
+          isAnimating = false;
+        });
+      }));
+
+    } else {
+      /* ── 名画：回転スワイプ ── */
+      const top = cards[cards.length - 1];
+      top.style.willChange = 'transform, opacity';
+
+      top.style.transition = 'transform .45s cubic-bezier(.22,1,.36,1), opacity .3s';
+      top.style.transform  = 'rotate(-12deg) translateX(-130%) translateY(-8%) scale(.95)';
+      top.style.opacity    = '0';
+
+      top.addEventListener('transitionend', function cleanup(e) {
+        if(e.propertyName !== 'transform') return;
+        top.removeEventListener('transitionend', cleanup);
+        top.style.willChange = '';
+
         el.insertBefore(top, cards[0]);
         top.style.transition = 'none';
+
         const total = cards.length;
         Array.from(el.querySelectorAll('.stack-card')).forEach((c, i) => {
           const d = total - 1 - i;
-          if(d===0){ c.style.transform='rotate(0) translateX(0) translateY(0) scale(1)'; c.style.opacity='1'; c.style.zIndex=String(total); }
-          else if(d===1){ c.style.transform='rotate(3deg) translateX(18px) translateY(5px) scale(.96)'; c.style.opacity='.75'; c.style.zIndex=String(total-1); }
-          else if(d===2){ c.style.transform='rotate(6deg) translateX(38px) translateY(10px) scale(.91)'; c.style.opacity='.5'; c.style.zIndex=String(total-2); }
-          else{ c.style.transform='rotate(8deg) translateX(52px) translateY(14px) scale(.87)'; c.style.opacity='0'; c.style.zIndex='1'; }
-          requestAnimationFrame(() => requestAnimationFrame(() => { c.style.transition=''; }));
+          if(d === 0)     { c.style.transform='rotate(0) translateX(0) translateY(0) scale(1)';   c.style.opacity='1';   c.style.zIndex=String(total); }
+          else if(d === 1){ c.style.transform='rotate(3deg) translateX(14px) translateY(5px) scale(.96)';  c.style.opacity='.75'; c.style.zIndex=String(total-1); }
+          else if(d === 2){ c.style.transform='rotate(6deg) translateX(28px) translateY(10px) scale(.91)'; c.style.opacity='.5';  c.style.zIndex=String(total-2); }
+          else             { c.style.transform='rotate(8deg) translateX(40px) translateY(14px) scale(.87)'; c.style.opacity='0';   c.style.zIndex='1'; }
+          requestAnimationFrame(() => requestAnimationFrame(() => { c.style.transition = ''; }));
         });
-      }, 400);
+
+        isAnimating = false;
+      });
+    }
+  }
+
+  /* クリック */
+  el.addEventListener('click', advance);
+
+  /* キーボード（Enter / Space） */
+  el.addEventListener('keydown', e => {
+    if(e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      advance();
     }
   });
 }
+
 document.querySelectorAll('.card-stack').forEach(initStack);
 </script>
 </body>
