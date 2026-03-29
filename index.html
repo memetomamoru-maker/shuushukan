@@ -159,7 +159,8 @@ display:flex;align-items:center;gap:10px;}
 /* scroll：縦線から続く */
 .hero-scroll{
   position:absolute;bottom:0;left:50%;
-  width:0;overflow:visible;
+  transform:translateX(-50%);
+  width:40px;
   z-index:5;
   display:flex;flex-direction:column;align-items:center;gap:0;
   opacity:0;animation:fadeUp .6s ease 1.4s forwards;
@@ -170,7 +171,7 @@ display:flex;align-items:center;gap:10px;}
   font-size:9px;font-weight:500;letter-spacing:.28em;
   color:rgba(245,240,232,.6);
   margin-bottom:6px;white-space:nowrap;
-  transform:translateX(-50%);display:block;
+  display:block;
 }
 .scroll-track{
   width:1px;height:56px;background:rgba(201,168,76,.25);
@@ -265,6 +266,7 @@ display:flex;align-items:center;gap:10px;}
 }
 .stack-card .screen{aspect-ratio:9/19.5;display:flex;
   border-radius:32px;overflow:hidden;
+  height:100%;
   }
 
 /* 初期配置：最後の3枚だけ見せる */
@@ -340,17 +342,26 @@ display:flex;align-items:center;gap:10px;}
 .ms-foot-share{font-size:7px;letter-spacing:.06em;color:#1e1508;background:#c9a84c;border-radius:10px;padding:3px 7px;white-space:nowrap;}
 
 /* ════════════════════════════
-   冒頭収集館 スクリーンUI
+   冒頭収集館 スクリーンUI（実アプリ仕様）
 ════════════════════════════ */
 .bs-wrap{
   width:100%;height:100%;
+  background:linear-gradient(160deg,#1a1614,#2d2118,#1a1614);
   display:flex;flex-direction:column;
   overflow:hidden;font-family:'Noto Serif JP',serif;
+  position:relative;
+}
+/* 左アクセント線 */
+.bs-wrap::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;z-index:10;
+  background:linear-gradient(to bottom,#c4621a,#e8a04a,#c4621a);
+  opacity:.7;
 }
 .bs-header{
   padding:10px 14px 8px;
   display:flex;align-items:center;justify-content:space-between;
   flex-shrink:0;
+  background:rgba(0,0,0,.35);backdrop-filter:blur(4px);
 }
 .bs-genre-tag{
   font-size:9px;font-weight:400;letter-spacing:.1em;
@@ -365,9 +376,24 @@ display:flex;align-items:center;gap:10px;}
   display:flex;align-items:center;justify-content:center;
   font-size:9px;color:rgba(201,168,76,.6);
 }
+/* 縦書きテキスト本文 */
 .bs-body{
   flex:1;overflow:hidden;
   display:flex;
+  padding:12px 16px 12px 18px;
+  position:relative;
+}
+.bs-text-area{
+  writing-mode:vertical-rl;
+  color:rgba(240,228,210,.88);
+  font-size:10.5px;
+  line-height:2;
+  letter-spacing:.12em;
+  height:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-weight:300;
+  flex:1;
 }
 .bs-img{
   width:100%;
@@ -378,6 +404,7 @@ display:flex;align-items:center;gap:10px;}
   padding:8px 14px;
   display:flex;align-items:center;justify-content:space-between;
   flex-shrink:0;border-top:1px solid rgba(201,168,76,.12);
+  background:rgba(0,0,0,.35);backdrop-filter:blur(4px);
 }
 .bs-foot-info{flex:1;min-width:0;}
 .bs-foot-author{font-size:9px;font-weight:500;letter-spacing:.1em;color:var(--gold);margin-bottom:2px;}
@@ -389,10 +416,6 @@ display:flex;align-items:center;gap:10px;}
 
 /* 各アプリの背景色 */
 #stack-meiga .bs-wrap, #stack-meiga .ms-wrap { /* nothing */ }
-/* 冒頭の背景は各画像の色に合わせてDARK */
-.bs-wrap { background: #0e0c14; }
-/* 冒頭header/footerの背景はwrapと同色 */
-.bs-header, .bs-footer { background: rgba(0,0,0,.35); backdrop-filter:blur(4px); }
 
 /* ── テキスト側 ── */
 .app-text{
@@ -529,10 +552,11 @@ footer{
   .hero-h1{font-size:clamp(24px,9vw,34px);}
 }
 
-/* 冒頭：傾きなしのスライド表示 */
+/* 冒頭：傾きなし・フェードスライド表示 */
 #stack-boutou .stack-card{
   transform:none !important;
   opacity:0 !important;
+  transition:opacity .35s ease, transform .35s ease !important;
 }
 #stack-boutou .stack-card:last-child{
   opacity:1 !important;
@@ -620,9 +644,8 @@ footer{
   <div class="intro-left reveal">
     <p class="intro-label">収集館シリーズについて</p>
     <h2 class="intro-h">
-      美術館にも図書館にも<br>
-      行かなくていい。
-      <em>美はもう、<br>手の中にある。</em>
+      スワイプするたびに、<br>
+      <em>はじめて出会う<br>世界がある。</em>
     </h2>
   </div>
   <div class="intro-right reveal d2">
@@ -882,39 +905,12 @@ footer{
         </div>
       </div>
       <div class="bs-body">
-        <img src="soseki.jpg" alt="吾輩は猫である" class="bs-img">
+        <div class="bs-text-area">吾輩は猫である。名前はまだ無い。どこで生れたかとんと見当がつかぬ。何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは書生という人間中で一番獰悪な種族であったそうだ。この書生というのは時々我々を捕えて煮て食うという話である。</div>
       </div>
       <div class="bs-footer">
         <div class="bs-foot-info">
-          <div class="bs-foot-author">夏目漱石 · 1905</div>
-          <div class="bs-foot-title">『吾輩は猫である』</div>
-        </div>
-        <div class="bs-foot-acts">
-          <div class="bs-foot-btn">原文</div>
-          <div class="bs-foot-btn bs-share">シェア</div>
-          <div class="bs-foot-icon">♡</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="stack-card">
-  <div class="screen">
-    <div class="bs-wrap">
-      <div class="bs-header">
-        <div class="bs-genre-tag">純文学</div>
-        <div class="bs-header-icons">
-          <div class="bs-ico">📚</div>
-          <div class="bs-ico">≡</div>
-        </div>
-      </div>
-      <div class="bs-body">
-        <img src="akutagawa.jpg" alt="春" class="bs-img">
-      </div>
-      <div class="bs-footer">
-        <div class="bs-foot-info">
-          <div class="bs-foot-author">芥川龍之介 · 1925</div>
-          <div class="bs-foot-title">『春』</div>
+          <div class="bs-foot-author">夏目漱石</div>
+          <div class="bs-foot-title">『吾輩は猫である』1905</div>
         </div>
         <div class="bs-foot-acts">
           <div class="bs-foot-btn">原文</div>
@@ -936,12 +932,12 @@ footer{
         </div>
       </div>
       <div class="bs-body">
-        <img src="ranpo.jpg" alt="悪霊" class="bs-img">
+        <div class="bs-text-area">それは、ある蒸し暑い夏の夜のことだった。帝都の片隅、瓦斯燈の灯る薄暗い横町に、奇妙な足音が響いていた。石畳を踏みしめるその音は、時に速く、時に遅く、まるで何者かを追い、あるいは何者かに追われているかのようだった。江戸川乱歩のペンが、また新たな謎を紡ぎはじめようとしていた。</div>
       </div>
       <div class="bs-footer">
         <div class="bs-foot-info">
-          <div class="bs-foot-author">江戸川乱歩 · 1933</div>
-          <div class="bs-foot-title">『悪霊』</div>
+          <div class="bs-foot-author">江戸川乱歩</div>
+          <div class="bs-foot-title">『悪霊』1933</div>
         </div>
         <div class="bs-foot-acts">
           <div class="bs-foot-btn">原文</div>
@@ -956,19 +952,46 @@ footer{
   <div class="screen">
     <div class="bs-wrap">
       <div class="bs-header">
-        <div class="bs-genre-tag">幻想・耽美</div>
+        <div class="bs-genre-tag">耽美・随筆</div>
         <div class="bs-header-icons">
           <div class="bs-ico">📚</div>
           <div class="bs-ico">≡</div>
         </div>
       </div>
       <div class="bs-body">
-        <img src="miyazawa.jpg" alt="山男の四月" class="bs-img">
+        <div class="bs-text-area">花は散り、人は老ゆ。すべては移ろい、とどまるものとてない。しかし美しいものへの憧れだけは、時の流れにも色褪せることなく、この胸の奥深くに宿り続けている。私は今日も、銀座の人波の中を、ひとり歩む。石畳に映る灯影を踏みながら、遠い日の記憶を手繰り寄せるように。</div>
       </div>
       <div class="bs-footer">
         <div class="bs-foot-info">
-          <div class="bs-foot-author">宮沢賢治 · 1933</div>
-          <div class="bs-foot-title">『山男の四月』</div>
+          <div class="bs-foot-author">永井荷風</div>
+          <div class="bs-foot-title">『断腸亭日乗』</div>
+        </div>
+        <div class="bs-foot-acts">
+          <div class="bs-foot-btn">原文</div>
+          <div class="bs-foot-btn bs-share">シェア</div>
+          <div class="bs-foot-icon">♡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="stack-card">
+  <div class="screen">
+    <div class="bs-wrap">
+      <div class="bs-header">
+        <div class="bs-genre-tag">幻想・童話</div>
+        <div class="bs-header-icons">
+          <div class="bs-ico">📚</div>
+          <div class="bs-ico">≡</div>
+        </div>
+      </div>
+      <div class="bs-body">
+        <div class="bs-text-area">山男のゴーシュは町の活動写真館でセロを弾く係りでした。けれどもあんまり上手でないという評判でした。上手でないどころではなく、実は仲間の楽手のなかではいちばん下手でしたから、いつでも楽長にいじめられるのでした。ひるすぎみんなは楽屋に円くならんで今度の町の音楽会へ出す第六交響曲の練習をしていました。</div>
+      </div>
+      <div class="bs-footer">
+        <div class="bs-foot-info">
+          <div class="bs-foot-author">宮沢賢治</div>
+          <div class="bs-foot-title">『セロ弾きのゴーシュ』</div>
         </div>
         <div class="bs-foot-acts">
           <div class="bs-foot-btn">原文</div>
@@ -1019,7 +1042,7 @@ footer{
   <div class="f-left">
     <div class="f-brand">収集館シリーズ</div>
     <p class="f-copy">
-      © memetomamoru &nbsp;／&nbsp;
+      © <span id="year"></span> memetomamoru &nbsp;／&nbsp;
       <a href="https://note.com/memetomamoru" target="_blank" rel="noopener">note</a>
     </p>
   </div>
@@ -1032,6 +1055,7 @@ footer{
 <script>
 /* NAV */
 const nav = document.getElementById('nav');
+document.getElementById('year').textContent = new Date().getFullYear();
 window.addEventListener('scroll', () => {
   nav.classList.toggle('solid', window.scrollY > 40);
 }, {passive:true});
@@ -1051,36 +1075,48 @@ function initStack(el) {
     const cards = Array.from(el.querySelectorAll('.stack-card'));
     const top = cards[cards.length - 1];
 
-    /* アニメーション：名画=回転しながら左へ、冒頭=フラットに左へ */
-    top.style.transition = isBoutou
-      ? 'transform .32s ease, opacity .24s'
-      : 'transform .45s cubic-bezier(.22,1,.36,1), opacity .3s';
-    top.style.transform = isBoutou
-      ? 'translateX(-108%)'
-      : 'rotate(-12deg) translateX(-130%) translateY(-8%) scale(.95)';
-    top.style.opacity = '0';
+    if(isBoutou) {
+      /* 冒頭：フェードアウト→移動→フェードイン */
+      top.style.transition = 'opacity .25s ease, transform .25s ease';
+      top.style.opacity = '0';
+      top.style.transform = 'translateX(-24px)';
+      setTimeout(() => {
+        el.insertBefore(top, cards[0]);
+        top.style.transition = 'none';
+        top.style.transform = 'translateX(24px)';
+        top.style.opacity = '0';
+        top.style.zIndex = '1';
+        const allCards = Array.from(el.querySelectorAll('.stack-card'));
+        const newTop = allCards[allCards.length - 1];
+        newTop.style.transition = 'none';
+        newTop.style.opacity = '0';
+        newTop.style.zIndex = '4';
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          newTop.style.transition = 'opacity .3s ease, transform .3s ease';
+          newTop.style.opacity = '1';
+          newTop.style.transform = 'none';
+        }));
+      }, 260);
+    } else {
+      /* 名画：回転しながら左へ */
+      top.style.transition = 'transform .45s cubic-bezier(.22,1,.36,1), opacity .3s';
+      top.style.transform = 'rotate(-12deg) translateX(-130%) translateY(-8%) scale(.95)';
+      top.style.opacity = '0';
 
-    setTimeout(() => {
-      el.insertBefore(top, cards[0]);
-      top.style.transition = 'none';
-      const total = cards.length;
-      Array.from(el.querySelectorAll('.stack-card')).forEach((c, i) => {
-        const d = total - 1 - i;
-        if(isBoutou) {
-          /* 冒頭：手前1枚だけ表示 */
-          c.style.transform = 'none';
-          c.style.opacity   = d === 0 ? '1' : '0';
-          c.style.zIndex    = String(total - d);
-        } else {
-          /* 名画：スタック */
+      setTimeout(() => {
+        el.insertBefore(top, cards[0]);
+        top.style.transition = 'none';
+        const total = cards.length;
+        Array.from(el.querySelectorAll('.stack-card')).forEach((c, i) => {
+          const d = total - 1 - i;
           if(d===0){ c.style.transform='rotate(0) translateX(0) translateY(0) scale(1)'; c.style.opacity='1'; c.style.zIndex=String(total); }
           else if(d===1){ c.style.transform='rotate(3deg) translateX(18px) translateY(5px) scale(.96)'; c.style.opacity='.75'; c.style.zIndex=String(total-1); }
           else if(d===2){ c.style.transform='rotate(6deg) translateX(38px) translateY(10px) scale(.91)'; c.style.opacity='.5'; c.style.zIndex=String(total-2); }
           else{ c.style.transform='rotate(8deg) translateX(52px) translateY(14px) scale(.87)'; c.style.opacity='0'; c.style.zIndex='1'; }
-        }
-        requestAnimationFrame(() => requestAnimationFrame(() => { c.style.transition=''; }));
-      });
-    }, isBoutou ? 300 : 400);
+          requestAnimationFrame(() => requestAnimationFrame(() => { c.style.transition=''; }));
+        });
+      }, 400);
+    }
   });
 }
 document.querySelectorAll('.card-stack').forEach(initStack);
