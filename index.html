@@ -116,7 +116,7 @@ body::after{
   backdrop-filter:blur(4px);
   margin-bottom:28px;
   opacity:0;animation:fadeUp .9s var(--ease) .15s forwards;
-}
+display:flex;align-items:center;gap:10px;}
 .hero-h1{
   font-family:'Shippori Mincho',serif;
   font-size:clamp(34px,5vw,64px);
@@ -158,16 +158,19 @@ body::after{
 
 /* scroll：縦線から続く */
 .hero-scroll{
-  position:absolute;bottom:0;left:50%;transform:translateX(-50%);z-index:5;
+  position:absolute;bottom:0;left:50%;
+  width:0;overflow:visible;
+  z-index:5;
   display:flex;flex-direction:column;align-items:center;gap:0;
   opacity:0;animation:fadeUp .6s ease 1.4s forwards;
-  text-decoration:none;padding-bottom:0;
+  text-decoration:none;
 }
 .hero-scroll-label{
   font-family:'Shippori Mincho',serif;
   font-size:9px;font-weight:500;letter-spacing:.28em;
   color:rgba(245,240,232,.6);
-  margin-bottom:8px;
+  margin-bottom:6px;white-space:nowrap;
+  transform:translateX(-50%);display:block;
 }
 .scroll-track{
   width:1px;height:56px;background:rgba(201,168,76,.25);
@@ -244,10 +247,10 @@ body::after{
    CARD STACK
 ════════════════════════════ */
 .card-stack{
-  position:relative;width:300px;height:620px;z-index:2;cursor:pointer;
+  position:relative;width:340px;z-index:2;cursor:pointer;
 }
 .stack-card{
-  position:absolute;top:0;left:0;width:300px;
+  position:absolute;top:0;left:0;width:340px;
   background:#1e1b16;border-radius:40px;padding:10px;
   box-shadow:0 0 0 1px rgba(201,168,76,.2),0 32px 64px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.04);
   transform-origin:center bottom;
@@ -260,17 +263,16 @@ body::after{
   width:80px;height:22px;
   background:#0d0b08;border-radius:0 0 14px 14px;z-index:10;
 }
-.stack-card .screen{
+.stack-card .screen{aspect-ratio:9/19.5;display:flex;
   border-radius:32px;overflow:hidden;
-  height:580px;
-}
+  }
 
 /* 初期配置：最後の3枚だけ見せる */
 .stack-card{opacity:0;transform:rotate(8deg) translateX(52px) translateY(14px) scale(.87);z-index:1;}
 .stack-card:nth-last-child(n+2):nth-last-child(-n+4){opacity:.5;z-index:2;transform:rotate(6deg) translateX(38px) translateY(10px) scale(.91);}
 .stack-card:nth-last-child(n+2):nth-last-child(-n+3){opacity:.75;z-index:3;transform:rotate(3deg) translateX(18px) translateY(5px) scale(.96);}
 .stack-card:last-child{opacity:1;z-index:4;transform:rotate(0) translateX(0) translateY(0) scale(1);}
-.card-stack:hover .stack-card:last-child{transform:rotate(-1.5deg) translateX(-8px) translateY(-8px) scale(1.01);box-shadow:0 0 0 1px rgba(201,168,76,.38),0 48px 88px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06);}
+#stack-meiga.card-stack:hover .stack-card:last-child{transform:rotate(-1.5deg) translateX(-8px) translateY(-8px) scale(1.01);box-shadow:0 0 0 1px rgba(201,168,76,.38),0 48px 88px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06);}
 
 .swipe-hint{
   position:absolute;bottom:-28px;left:0;
@@ -482,9 +484,9 @@ footer{
   .app-visual{padding:56px 32px;min-height:640px;}
   .app-text{padding:56px 40px;}
   .app-sec.rev .app-text{padding:56px 40px;}
-  .card-stack{width:260px;height:540px;}
+  .card-stack{width:280px;}
   .stack-card{width:260px;}
-  .stack-card .screen{height:500px;}
+  .stack-card .screen{}
   .gem-row{padding:40px;}
   footer{padding:40px;}
 }
@@ -509,7 +511,7 @@ footer{
   .app-sec.rev .app-text{order:2;}
   .card-stack{width:240px;height:500px;}
   .stack-card{width:240px;}
-  .stack-card .screen{height:460px;}
+  .stack-card .screen{}
   .app-h2{font-size:28px;}
   .app-body{font-size:13px;max-width:100%;}
   .feat li{font-size:12px;padding:10px 0;}
@@ -526,6 +528,21 @@ footer{
   .hero{grid-template-columns:1fr;}
   .hero-h1{font-size:clamp(24px,9vw,34px);}
 }
+
+/* 冒頭：傾きなしのスライド表示 */
+#stack-boutou .stack-card{
+  transform:none !important;
+  opacity:0 !important;
+}
+#stack-boutou .stack-card:last-child{
+  opacity:1 !important;
+  z-index:4;
+}
+#stack-boutou.card-stack:hover .stack-card:last-child{
+  transform:none !important;
+  box-shadow:0 0 0 1px rgba(201,168,76,.38),0 52px 96px rgba(0,0,0,.8);
+}
+
 </style>
 </head>
 <body>
@@ -558,7 +575,18 @@ footer{
   <div class="hero-half"><img src="silhouette.jpg" alt="読書するシルエット"></div>
   <div class="hero-center-line" aria-hidden="true"></div>
   <div class="hero-body">
-    <p class="hero-kicker">収集館シリーズ</p>
+    <p class="hero-kicker"><svg width="28" height="24" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M16 2L30 10H2L16 2Z" stroke="#c9a84c" stroke-width="1.2" stroke-linejoin="round"/>
+  <circle cx="16" cy="2" r="1.2" fill="#c9a84c"/>
+  <rect x="5"  y="10" width="2" height="13" fill="#c9a84c" rx="0.4"/>
+  <rect x="11" y="10" width="2" height="13" fill="#c9a84c" rx="0.4"/>
+  <rect x="19" y="10" width="2" height="13" fill="#c9a84c" rx="0.4"/>
+  <rect x="25" y="10" width="2" height="13" fill="#c9a84c" rx="0.4"/>
+  <path d="M13 23 L13 18.5 Q16 15 19 18.5 L19 23" stroke="#c9a84c" stroke-width="1.2" fill="none"/>
+  <line x1="2"  y1="23" x2="30" y2="23" stroke="#c9a84c" stroke-width="1.2"/>
+  <line x1="0"  y1="27" x2="32" y2="27" stroke="#c9a84c" stroke-width="1.2"/>
+  <line x1="1"  y1="25" x2="31" y2="25" stroke="#c9a84c" stroke-width="0.7" stroke-opacity="0.55"/>
+</svg><span>収集館シリーズ</span></p>
     <h1 class="hero-h1">
       スワイプするたびに、
       <span>世界が広がる。</span>
@@ -606,7 +634,7 @@ footer{
     </p>
     <div class="intro-stats">
       <div class="stat">
-        <div class="stat-num">664</div>
+        <div class="stat-num">600+</div>
         <div class="stat-label">収録名画数</div>
       </div>
       <div class="stat">
@@ -642,7 +670,7 @@ footer{
           <div class="ms-ico">?</div>
         </div>
       </div>
-      <div class="ms-counter">8 / 664</div>
+      <div class="ms-counter">8 / 600+</div>
       <div class="ms-canvas">
         <div class="ms-frame-outer">
           <div class="ms-frame-inner">
@@ -676,7 +704,7 @@ footer{
           <div class="ms-ico">?</div>
         </div>
       </div>
-      <div class="ms-counter">9 / 664</div>
+      <div class="ms-counter">9 / 600+</div>
       <div class="ms-canvas">
         <div class="ms-frame-outer">
           <div class="ms-frame-inner">
@@ -710,7 +738,7 @@ footer{
           <div class="ms-ico">?</div>
         </div>
       </div>
-      <div class="ms-counter">21 / 664</div>
+      <div class="ms-counter">21 / 600+</div>
       <div class="ms-canvas">
         <div class="ms-frame-outer">
           <div class="ms-frame-inner">
@@ -744,7 +772,7 @@ footer{
           <div class="ms-ico">?</div>
         </div>
       </div>
-      <div class="ms-counter">35 / 664</div>
+      <div class="ms-counter">35 / 600+</div>
       <div class="ms-canvas">
         <div class="ms-frame-outer">
           <div class="ms-frame-inner">
@@ -778,7 +806,7 @@ footer{
           <div class="ms-ico">?</div>
         </div>
       </div>
-      <div class="ms-counter">47 / 664</div>
+      <div class="ms-counter">47 / 600+</div>
       <div class="ms-canvas">
         <div class="ms-frame-outer">
           <div class="ms-frame-inner">
@@ -1002,39 +1030,57 @@ footer{
 </footer>
 
 <script>
+/* NAV */
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
   nav.classList.toggle('solid', window.scrollY > 40);
 }, {passive:true});
 
+/* REVEAL */
 const io = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); }
   });
-}, {threshold:.1,rootMargin:'0px 0px -24px 0px'});
+}, {threshold:.1, rootMargin:'0px 0px -24px 0px'});
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-function initStack(stackEl) {
-  stackEl.addEventListener('click', () => {
-    const cards = Array.from(stackEl.querySelectorAll('.stack-card'));
+/* CARD STACK */
+function initStack(el) {
+  const isBoutou = el.id === 'stack-boutou';
+  el.addEventListener('click', () => {
+    const cards = Array.from(el.querySelectorAll('.stack-card'));
     const top = cards[cards.length - 1];
-    top.style.transition = 'transform .45s cubic-bezier(.22,1,.36,1), opacity .3s';
-    top.style.transform = 'rotate(-12deg) translateX(-130%) translateY(-8%) scale(.95)';
+
+    /* アニメーション：名画=回転しながら左へ、冒頭=フラットに左へ */
+    top.style.transition = isBoutou
+      ? 'transform .32s ease, opacity .24s'
+      : 'transform .45s cubic-bezier(.22,1,.36,1), opacity .3s';
+    top.style.transform = isBoutou
+      ? 'translateX(-108%)'
+      : 'rotate(-12deg) translateX(-130%) translateY(-8%) scale(.95)';
     top.style.opacity = '0';
+
     setTimeout(() => {
-      stackEl.insertBefore(top, cards[0]);
+      el.insertBefore(top, cards[0]);
       top.style.transition = 'none';
       const total = cards.length;
-      const updated = Array.from(stackEl.querySelectorAll('.stack-card'));
-      updated.forEach((c, i) => {
-        const fromTop = total - 1 - i;
-        if(fromTop === 0){ c.style.transform='rotate(0) translateX(0) translateY(0) scale(1)'; c.style.opacity='1'; c.style.zIndex=String(total); }
-        else if(fromTop === 1){ c.style.transform='rotate(3deg) translateX(18px) translateY(5px) scale(.96)'; c.style.opacity='.75'; c.style.zIndex=String(total-1); }
-        else if(fromTop === 2){ c.style.transform='rotate(6deg) translateX(38px) translateY(10px) scale(.91)'; c.style.opacity='.5'; c.style.zIndex=String(total-2); }
-        else{ c.style.transform='rotate(8deg) translateX(52px) translateY(14px) scale(.87)'; c.style.opacity='0'; c.style.zIndex='1'; }
+      Array.from(el.querySelectorAll('.stack-card')).forEach((c, i) => {
+        const d = total - 1 - i;
+        if(isBoutou) {
+          /* 冒頭：手前1枚だけ表示 */
+          c.style.transform = 'none';
+          c.style.opacity   = d === 0 ? '1' : '0';
+          c.style.zIndex    = String(total - d);
+        } else {
+          /* 名画：スタック */
+          if(d===0){ c.style.transform='rotate(0) translateX(0) translateY(0) scale(1)'; c.style.opacity='1'; c.style.zIndex=String(total); }
+          else if(d===1){ c.style.transform='rotate(3deg) translateX(18px) translateY(5px) scale(.96)'; c.style.opacity='.75'; c.style.zIndex=String(total-1); }
+          else if(d===2){ c.style.transform='rotate(6deg) translateX(38px) translateY(10px) scale(.91)'; c.style.opacity='.5'; c.style.zIndex=String(total-2); }
+          else{ c.style.transform='rotate(8deg) translateX(52px) translateY(14px) scale(.87)'; c.style.opacity='0'; c.style.zIndex='1'; }
+        }
         requestAnimationFrame(() => requestAnimationFrame(() => { c.style.transition=''; }));
       });
-    }, 400);
+    }, isBoutou ? 300 : 400);
   });
 }
 document.querySelectorAll('.card-stack').forEach(initStack);
