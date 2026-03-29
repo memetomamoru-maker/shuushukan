@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>収集館シリーズ</title>
+<meta name="description" content="名画と文学の冒頭を、スワイプして旅するアプリシリーズ。">
+<!-- OGP -->
+<meta property="og:title" content="収集館シリーズ">
+<meta property="og:description" content="スワイプするたびに、世界が広がる。名画収集館・冒頭収集館。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://meiga.vercel.app">
+<meta property="og:image" content="https://meiga.vercel.app/ogp.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="収集館シリーズ">
+<meta name="twitter:description" content="スワイプするたびに、世界が広がる。">
+<meta name="twitter:image" content="https://meiga.vercel.app/ogp.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:    #c9a84c;
+  --ink:     #0d0b08;
+  --ink-mid: #181410;
+  --washi:   #f5f0e8;
+  --body:    #ccc5b8;
+  --sub:     #8a8278;
+  --border:  rgba(201,168,76,.14);
+  --ease:    cubic-bezier(.22,1,.36,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);color:var(--washi);
+  font-family:'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho',serif;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1;
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.022;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── NAV ── */
+.nav{
+  position:fixed;inset:0 0 auto 0;z-index:800;
+  height:64px;padding:0 52px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:background .35s,border-color .35s;
+  border-bottom:1px solid transparent;
+}
+.nav.solid{background:rgba(13,11,8,.96);border-bottom-color:var(--border);}
+.nav-logo{
+  font-family:'Shippori Mincho',serif;
+  font-size:14px;font-weight:700;letter-spacing:.22em;
+  color:var(--gold);text-decoration:none;
+  display:flex;align-items:center;gap:10px;
+}
+.nav-logo svg{flex-shrink:0}
+.nav-links{list-style:none;display:flex;gap:36px;}
+.nav-links a{
+  font-size:12px;font-weight:300;letter-spacing:.14em;
+  color:var(--sub);text-decoration:none;transition:color .25s;
+}
+.nav-links a:hover{color:var(--washi);}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
+.reveal.on{opacity:1;transform:none;}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}
+.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+/* ════════════════════════════
+   HERO
+════════════════════════════ */
+.hero{
+  position:relative;height:100vh;height:100svh;min-height:600px;
+  display:grid;grid-template-columns:1fr 1fr;overflow:hidden;
+}
+.hero-half{position:relative;overflow:hidden;}
+.hero-half img{width:100%;height:100%;object-fit:cover;display:block;}
+.hero-half:first-child img{object-position:center 15%;filter:brightness(.48) saturate(.8);}
+.hero-half:first-child::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to right,rgba(13,11,8,.1) 0%,rgba(13,11,8,.72) 100%);
+}
+.hero-half:last-child img{object-position:center;filter:brightness(.44) saturate(.65);}
+.hero-half:last-child::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to left,rgba(13,11,8,.1) 0%,rgba(13,11,8,.72) 100%);
+}
+/* 中央線：scrollに接続 */
+.hero-center-line{
+  position:absolute;top:0;left:50%;z-index:3;
+  width:1px;height:100%;
+  background:linear-gradient(to bottom,
+    transparent 0%,rgba(201,168,76,.55) 8%,
+    rgba(201,168,76,.55) 44%,transparent 52%,
+    transparent 72%,rgba(201,168,76,.45) 80%,
+    rgba(201,168,76,.45) 96%,transparent 100%);
+}
+.hero-body{
+  position:absolute;inset:0;z-index:4;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:80px 40px 100px;text-align:center;
+  background:radial-gradient(ellipse 52% 62% at 50% 50%,rgba(13,11,8,.82) 0%,transparent 100%);
+}
+.hero-kicker{
+  font-family:'Shippori Mincho',serif;
+  font-size:12px;font-weight:500;letter-spacing:.36em;
+  color:var(--washi);
+  padding:7px 18px;
+  border:1px solid rgba(201,168,76,.45);
+  background:rgba(13,11,8,.55);
+  backdrop-filter:blur(4px);
+  margin-bottom:28px;
+  opacity:0;animation:fadeUp .9s var(--ease) .15s forwards;
+}
+.hero-h1{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(34px,5vw,64px);
+  font-weight:800;letter-spacing:.04em;line-height:1.35;
+  color:var(--washi);margin-bottom:22px;
+  text-shadow:0 2px 32px rgba(0,0,0,.9);
+  opacity:0;animation:fadeUp .9s var(--ease) .3s forwards;
+}
+.hero-h1 span{
+  display:block;
+  background:linear-gradient(110deg,#b8902a 0%,#e8c96a 50%,#c9a84c 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-lead{
+  font-size:clamp(12px,1.2vw,14px);font-weight:300;
+  letter-spacing:.16em;line-height:2.6;
+  color:var(--body);margin-bottom:44px;max-width:380px;
+  text-shadow:0 1px 16px rgba(0,0,0,.95);
+  opacity:0;animation:fadeUp .9s var(--ease) .44s forwards;
+}
+.hero-apps{
+  display:flex;gap:14px;
+  opacity:0;animation:fadeUp .9s var(--ease) .56s forwards;
+}
+.hero-app-link{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  text-decoration:none;padding:15px 26px;
+  border:1px solid rgba(201,168,76,.32);
+  background:rgba(13,11,8,.65);
+  transition:all .3s var(--ease);min-width:148px;position:relative;z-index:5;
+}
+.hero-app-link:hover{border-color:var(--gold);background:rgba(201,168,76,.1);transform:translateY(-3px);}
+.hero-app-link.primary{background:linear-gradient(135deg,#b8902a,#dbb84e);border-color:transparent;}
+.hero-app-link.primary:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(201,168,76,.4);background:linear-gradient(135deg,#c9a030,#e8c96a);}
+.hero-app-link .name{font-family:'Shippori Mincho',serif;font-size:14px;font-weight:700;letter-spacing:.12em;color:var(--washi);}
+.hero-app-link.primary .name{color:#120d01;}
+.hero-app-link .hint{font-size:10px;font-weight:300;letter-spacing:.1em;color:var(--sub);}
+.hero-app-link.primary .hint{color:rgba(18,13,1,.6);}
+
+/* scroll：縦線から続く */
+.hero-scroll{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);z-index:5;
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  opacity:0;animation:fadeUp .6s ease 1.4s forwards;
+  text-decoration:none;padding-bottom:0;
+}
+.hero-scroll-label{
+  font-family:'Shippori Mincho',serif;
+  font-size:9px;font-weight:500;letter-spacing:.28em;
+  color:rgba(245,240,232,.6);
+  margin-bottom:8px;
+}
+.scroll-track{
+  width:1px;height:56px;background:rgba(201,168,76,.25);
+  position:relative;overflow:hidden;
+}
+.scroll-thumb{
+  position:absolute;top:0;left:0;right:0;
+  height:40%;background:var(--gold);
+  animation:scrollDown 2s ease-in-out 1.8s infinite;
+}
+
+/* ══ SHARED ══ */
+.hr{border:none;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,.2),transparent);}
+.container{max-width:1080px;margin:0 auto;padding:0 64px;}
+
+/* ════════════════════════════
+   INTRO — 刷新
+════════════════════════════ */
+.intro{
+  padding:96px 64px;
+  max-width:1080px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+}
+.intro-left{}
+.intro-label{
+  font-size:10px;font-weight:300;letter-spacing:.36em;
+  color:var(--gold);margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;
+}
+.intro-label::before{content:'';width:20px;height:1px;background:var(--gold);opacity:.6;}
+.intro-h{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(22px,2.8vw,36px);font-weight:700;
+  letter-spacing:.1em;line-height:1.9;
+  color:var(--washi);
+}
+.intro-h em{
+  font-style:normal;display:block;
+  background:linear-gradient(110deg,#b8902a,#e8c96a,#c9a84c);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.intro-right{}
+.intro-p{
+  font-size:14px;font-weight:300;letter-spacing:.1em;
+  line-height:2.9;color:var(--body);
+  margin-bottom:28px;
+}
+.intro-stats{
+  display:flex;gap:32px;
+  padding-top:24px;border-top:1px solid var(--border);
+}
+.stat{}
+.stat-num{
+  font-family:'Shippori Mincho',serif;
+  font-size:28px;font-weight:700;color:var(--gold);
+  letter-spacing:.04em;line-height:1;margin-bottom:6px;
+}
+.stat-label{font-size:11px;font-weight:300;letter-spacing:.1em;color:var(--sub);}
+
+/* ════════════════════════════
+   APP SECTION
+════════════════════════════ */
+.app-sec{padding:0;}
+.app-wrap{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--border);}
+.app-visual{
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  padding:72px 40px;min-height:760px;
+  background:var(--ink-mid);
+}
+.app-visual-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.07;}
+
+/* ════════════════════════════
+   CARD STACK
+════════════════════════════ */
+.card-stack{
+  position:relative;width:300px;height:620px;z-index:2;cursor:pointer;
+}
+.stack-card{
+  position:absolute;top:0;left:0;width:300px;
+  background:#1e1b16;border-radius:40px;padding:10px;
+  box-shadow:0 0 0 1px rgba(201,168,76,.2),0 32px 64px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.04);
+  transform-origin:center bottom;
+  transition:transform .5s var(--ease),opacity .5s var(--ease),box-shadow .3s;
+  will-change:transform;
+}
+.stack-card::before{
+  content:'';position:absolute;
+  top:16px;left:50%;transform:translateX(-50%);
+  width:80px;height:22px;
+  background:#0d0b08;border-radius:0 0 14px 14px;z-index:10;
+}
+.stack-card .screen{
+  border-radius:32px;overflow:hidden;
+  height:580px;
+}
+
+/* 初期配置：最後の3枚だけ見せる */
+.stack-card{opacity:0;transform:rotate(8deg) translateX(52px) translateY(14px) scale(.87);z-index:1;}
+.stack-card:nth-last-child(n+2):nth-last-child(-n+4){opacity:.5;z-index:2;transform:rotate(6deg) translateX(38px) translateY(10px) scale(.91);}
+.stack-card:nth-last-child(n+2):nth-last-child(-n+3){opacity:.75;z-index:3;transform:rotate(3deg) translateX(18px) translateY(5px) scale(.96);}
+.stack-card:last-child{opacity:1;z-index:4;transform:rotate(0) translateX(0) translateY(0) scale(1);}
+.card-stack:hover .stack-card:last-child{transform:rotate(-1.5deg) translateX(-8px) translateY(-8px) scale(1.01);box-shadow:0 0 0 1px rgba(201,168,76,.38),0 48px 88px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06);}
+
+.swipe-hint{
+  position:absolute;bottom:-28px;left:0;
+  display:flex;align-items:center;gap:8px;
+  animation:hintPulse 2.4s ease-in-out 1s infinite;
+}
+.swipe-hint span{font-size:10px;font-weight:300;letter-spacing:.2em;color:var(--sub);}
+.swipe-arrows{display:flex;gap:3px;}
+.swipe-arrows i{
+  display:block;width:5px;height:5px;
+  border-right:1.5px solid var(--gold);border-bottom:1.5px solid var(--gold);
+  transform:rotate(-45deg);opacity:0;
+  animation:arrowFlow 1.2s ease-in-out infinite;
+}
+.swipe-arrows i:nth-child(2){animation-delay:.15s;}
+.swipe-arrows i:nth-child(3){animation-delay:.3s;}
+
+/* ════════════════════════════
+   名画収集館 スクリーンUI
+════════════════════════════ */
+.ms-wrap{
+  width:100%;height:100%;
+  background:#f2ece0;
+  display:flex;flex-direction:column;
+  overflow:hidden;font-family:'Noto Serif JP',serif;
+}
+.ms-header{
+  background:#1e1508;padding:10px 14px 8px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.ms-app-name{font-size:11px;font-weight:500;letter-spacing:.12em;color:#c9a84c;}
+.ms-header-icons{display:flex;gap:6px;}
+.ms-ico{
+  width:18px;height:18px;border-radius:50%;
+  border:1px solid rgba(201,168,76,.45);
+  display:flex;align-items:center;justify-content:center;
+  font-size:8px;color:#c9a84c;line-height:1;
+}
+.ms-counter{
+  padding:5px 14px 0;flex-shrink:0;
+  font-size:8px;font-weight:300;letter-spacing:.1em;
+  color:rgba(30,21,8,.4);font-style:italic;
+}
+.ms-canvas{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:12px 20px;overflow:hidden;
+}
+.ms-frame-outer{
+  width:100%;
+  box-shadow:3px 5px 14px rgba(0,0,0,.3),0 0 0 8px #1a1208,0 0 0 9px #2a2010;
+}
+.ms-frame-inner{overflow:hidden;}
+.ms-img{width:100%;display:block;object-fit:cover;aspect-ratio:3/4;}
+.ms-footer{
+  background:#1e1508;padding:9px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;border-top:1px solid rgba(201,168,76,.18);
+}
+.ms-foot-info{flex:1;min-width:0;}
+.ms-foot-title{font-size:9px;font-weight:500;letter-spacing:.08em;color:#c9a84c;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ms-foot-artist{font-size:7px;font-weight:300;letter-spacing:.05em;color:rgba(201,168,76,.5);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ms-foot-acts{display:flex;gap:5px;align-items:center;flex-shrink:0;margin-left:8px;}
+.ms-foot-icon{font-size:8px;color:rgba(201,168,76,.65);width:20px;height:20px;border-radius:50%;border:1px solid rgba(201,168,76,.28);display:flex;align-items:center;justify-content:center;}
+.ms-foot-share{font-size:7px;letter-spacing:.06em;color:#1e1508;background:#c9a84c;border-radius:10px;padding:3px 7px;white-space:nowrap;}
+
+/* ════════════════════════════
+   冒頭収集館 スクリーンUI
+════════════════════════════ */
+.bs-wrap{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
+  overflow:hidden;font-family:'Noto Serif JP',serif;
+}
+.bs-header{
+  padding:10px 14px 8px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.bs-genre-tag{
+  font-size:9px;font-weight:400;letter-spacing:.1em;
+  color:rgba(201,168,76,.9);
+  border:1px solid rgba(201,168,76,.4);
+  padding:3px 8px;border-radius:2px;
+}
+.bs-header-icons{display:flex;gap:6px;}
+.bs-ico{
+  width:20px;height:20px;border-radius:50%;
+  border:1px solid rgba(201,168,76,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;color:rgba(201,168,76,.6);
+}
+.bs-body{
+  flex:1;overflow:hidden;
+  display:flex;
+}
+.bs-img{
+  width:100%;
+  object-fit:cover;object-position:top center;
+  display:block;
+}
+.bs-footer{
+  padding:8px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;border-top:1px solid rgba(201,168,76,.12);
+}
+.bs-foot-info{flex:1;min-width:0;}
+.bs-foot-author{font-size:9px;font-weight:500;letter-spacing:.1em;color:var(--gold);margin-bottom:2px;}
+.bs-foot-title{font-size:7px;font-weight:300;letter-spacing:.06em;color:rgba(201,168,76,.55);font-style:italic;}
+.bs-foot-acts{display:flex;gap:5px;align-items:center;flex-shrink:0;margin-left:8px;}
+.bs-foot-btn{font-size:7px;letter-spacing:.06em;color:rgba(201,168,76,.7);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:3px 7px;}
+.bs-share{color:#1e1508 !important;background:#c9a84c;border-color:#c9a84c !important;}
+.bs-foot-icon{font-size:8px;color:rgba(201,168,76,.6);width:20px;height:20px;border-radius:50%;border:1px solid rgba(201,168,76,.28);display:flex;align-items:center;justify-content:center;}
+
+/* 各アプリの背景色 */
+#stack-meiga .bs-wrap, #stack-meiga .ms-wrap { /* nothing */ }
+/* 冒頭の背景は各画像の色に合わせてDARK */
+.bs-wrap { background: #0e0c14; }
+/* 冒頭header/footerの背景はwrapと同色 */
+.bs-header, .bs-footer { background: rgba(0,0,0,.35); backdrop-filter:blur(4px); }
+
+/* ── テキスト側 ── */
+.app-text{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:80px 72px 80px 64px;
+  border-left:1px solid var(--border);
+}
+.app-sec.rev .app-text{
+  padding:80px 64px 80px 72px;
+  border-left:none;border-right:1px solid var(--border);
+  order:-1;
+}
+.app-num{font-size:11px;font-weight:300;letter-spacing:.3em;color:var(--gold);margin-bottom:14px;}
+.app-h2{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(30px,3.6vw,46px);font-weight:700;
+  letter-spacing:.06em;line-height:1.2;color:var(--washi);margin-bottom:20px;
+}
+.app-body{
+  font-size:14px;font-weight:300;letter-spacing:.08em;
+  line-height:2.7;color:var(--body);margin-bottom:32px;max-width:380px;
+}
+.feat{list-style:none;margin-bottom:40px;border-top:1px solid rgba(201,168,76,.1);}
+.feat li{
+  display:flex;align-items:center;gap:12px;
+  font-size:13px;font-weight:300;letter-spacing:.06em;
+  color:var(--body);padding:11px 0;
+  border-bottom:1px solid rgba(245,240,232,.05);line-height:1.7;
+}
+.feat li::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--gold);flex-shrink:0;opacity:.8;}
+.cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:'Noto Serif JP',serif;
+  font-size:13px;font-weight:400;letter-spacing:.1em;
+  text-decoration:none;padding:14px 28px;
+  transition:all .3s var(--ease);cursor:pointer;border:none;white-space:nowrap;
+}
+.btn-gold{background:linear-gradient(135deg,#b8902a,#dbb84e);color:#120d01;}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(201,168,76,.3);}
+.btn-off{
+  background:transparent;color:var(--sub);
+  border:1px solid rgba(245,240,232,.1);cursor:default;
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Noto Serif JP',serif;
+  font-size:13px;font-weight:300;letter-spacing:.1em;padding:14px 20px;
+}
+.btn-off .dot{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.5;}
+
+/* ── GEM DIVIDER ── */
+.gem-row{display:flex;align-items:center;gap:16px;padding:48px 64px;max-width:1080px;margin:0 auto;}
+.gem-row .l{flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,.2),transparent);}
+.gem-row .g{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);opacity:.4;}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);padding:44px 52px;
+  display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;
+}
+.f-brand{font-family:'Shippori Mincho',serif;font-size:14px;font-weight:700;letter-spacing:.2em;color:var(--gold);margin-bottom:8px;}
+.f-copy{font-size:11px;font-weight:300;letter-spacing:.08em;color:var(--sub);line-height:2;}
+.f-copy a{color:var(--gold);text-decoration:none;transition:opacity .25s;}
+.f-copy a:hover{opacity:.75;}
+.f-right{display:flex;gap:28px;align-items:center;}
+.f-right a{font-size:12px;font-weight:300;letter-spacing:.1em;color:var(--sub);text-decoration:none;transition:color .25s;}
+.f-right a:hover{color:var(--washi);}
+
+/* ════════════════════════════
+   KEYFRAMES
+════════════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+@keyframes scrollDown{0%{top:-40%;}100%{top:100%;}}
+@keyframes hintPulse{0%,100%{opacity:0;}40%,60%{opacity:1;}}
+@keyframes arrowFlow{
+  0%{opacity:0;transform:rotate(-45deg) translate(-2px,-2px);}
+  50%{opacity:1;}
+  100%{opacity:0;transform:rotate(-45deg) translate(2px,2px);}
+}
+
+/* ════════════════════════════
+   TABLET 768〜1023px
+════════════════════════════ */
+@media(min-width:768px) and (max-width:1023px){
+  .nav{padding:0 32px;}
+  .container{padding:0 40px;}
+  .intro{padding:72px 40px;grid-template-columns:1fr;gap:40px;}
+  .app-visual{padding:56px 32px;min-height:640px;}
+  .app-text{padding:56px 40px;}
+  .app-sec.rev .app-text{padding:56px 40px;}
+  .card-stack{width:260px;height:540px;}
+  .stack-card{width:260px;}
+  .stack-card .screen{height:500px;}
+  .gem-row{padding:40px;}
+  footer{padding:40px;}
+}
+
+/* ════════════════════════════
+   MOBILE 〜767px
+════════════════════════════ */
+@media(max-width:767px){
+  .nav{padding:0 20px;height:54px;}
+  .nav-links{display:none;}
+  .hero{grid-template-columns:1fr 1fr;}
+  .hero-body{padding:70px 18px 80px;}
+  .hero-h1{font-size:clamp(26px,8vw,40px);letter-spacing:.03em;}
+  .hero-lead{font-size:12px;letter-spacing:.12em;line-height:2.4;margin-bottom:32px;}
+  .hero-apps{flex-direction:column;width:100%;max-width:220px;gap:10px;}
+  .hero-app-link{min-width:unset;width:100%;padding:13px 20px;}
+  .intro{padding:56px 20px;grid-template-columns:1fr;gap:36px;}
+  .container{padding:0 20px;}
+  .app-wrap{grid-template-columns:1fr;}
+  .app-visual{min-height:500px;padding:48px 20px;order:1;}
+  .app-text{padding:48px 20px !important;border-left:none !important;border-right:none !important;border-top:1px solid var(--border);order:2;}
+  .app-sec.rev .app-text{order:2;}
+  .card-stack{width:240px;height:500px;}
+  .stack-card{width:240px;}
+  .stack-card .screen{height:460px;}
+  .app-h2{font-size:28px;}
+  .app-body{font-size:13px;max-width:100%;}
+  .feat li{font-size:12px;padding:10px 0;}
+  .cta{flex-direction:column;}
+  .cta .btn,.cta .btn-off{width:100%;justify-content:center;}
+  footer{padding:36px 20px;grid-template-columns:1fr;gap:20px;}
+  .f-right{flex-direction:column;align-items:flex-start;gap:14px;}
+  .gem-row{padding:32px 20px;}
+  .intro-stats{gap:20px;}
+}
+@media(max-width:479px){
+  .hero-center-line{display:none;}
+  .hero-half:last-child{display:none;}
+  .hero{grid-template-columns:1fr;}
+  .hero-h1{font-size:clamp(24px,9vw,34px);}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo">
+    <svg width="32" height="28" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 2L30 10H2L16 2Z" stroke="#c9a84c" stroke-width="1.2" stroke-linejoin="round"/>
+      <circle cx="16" cy="2" r="1.2" fill="#c9a84c"/>
+      <rect x="5"  y="10" width="2" height="13" fill="#c9a84c" rx="0.5"/>
+      <rect x="11" y="10" width="2" height="13" fill="#c9a84c" rx="0.5"/>
+      <rect x="19" y="10" width="2" height="13" fill="#c9a84c" rx="0.5"/>
+      <rect x="25" y="10" width="2" height="13" fill="#c9a84c" rx="0.5"/>
+      <path d="M13 23 L13 18 Q16 14.5 19 18 L19 23" stroke="#c9a84c" stroke-width="1.2" fill="none"/>
+      <line x1="2" y1="23" x2="30" y2="23" stroke="#c9a84c" stroke-width="1.2"/>
+      <line x1="0" y1="27" x2="32" y2="27" stroke="#c9a84c" stroke-width="1.2"/>
+      <line x1="1" y1="25" x2="31" y2="25" stroke="#c9a84c" stroke-width="0.8" stroke-opacity="0.6"/>
+    </svg>
+    <span>収集館シリーズ</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#meiga">名画収集館</a></li>
+    <li><a href="#boutou">冒頭収集館</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" aria-label="ヒーロー">
+  <div class="hero-half"><img src="images/pearl.jpg" alt="真珠の耳飾りの少女"></div>
+  <div class="hero-half"><img src="images/silhouette.jpg" alt="読書するシルエット"></div>
+  <div class="hero-center-line" aria-hidden="true"></div>
+  <div class="hero-body">
+    <p class="hero-kicker">収集館シリーズ</p>
+    <h1 class="hero-h1">
+      スワイプするたびに、
+      <span>世界が広がる。</span>
+    </h1>
+    <p class="hero-lead">
+      名画と出会い、文学に触れる。<br>
+      600点を超える名画と、数百の文学冒頭が<br>
+      あなたを待っている。
+    </p>
+    <div class="hero-apps">
+      <a href="#meiga" class="hero-app-link primary">
+        <span class="name">名画収集館</span>
+        <span class="hint">名画 600点以上・無料公開中</span>
+      </a>
+      <a href="#boutou" class="hero-app-link">
+        <span class="name">冒頭収集館</span>
+        <span class="hint">名作冒頭 500本以上・無料公開中</span>
+      </a>
+    </div>
+  </div>
+  <a href="#intro" class="hero-scroll" aria-label="スクロール">
+    <span class="hero-scroll-label">scroll</span>
+    <div class="scroll-track"><div class="scroll-thumb"></div></div>
+  </a>
+</section>
+
+<hr class="hr">
+
+<!-- INTRO -->
+<div class="intro" id="intro">
+  <div class="intro-left reveal">
+    <p class="intro-label">収集館シリーズについて</p>
+    <h2 class="intro-h">
+      美術館にも図書館にも<br>
+      行かなくていい。
+      <em>美はもう、<br>手の中にある。</em>
+    </h2>
+  </div>
+  <div class="intro-right reveal d2">
+    <p class="intro-p">
+      パブリックドメインの名作だけを集めた、<br>
+      完全無料のアプリシリーズです。<br>
+      スワイプするたびに新しい世界と出会い、<br>
+      日常のどこかで、美しいものと出会い直す。
+    </p>
+    <div class="intro-stats">
+      <div class="stat">
+        <div class="stat-num">664</div>
+        <div class="stat-label">収録名画数</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">500+</div>
+        <div class="stat-label">文学冒頭数</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">無料</div>
+        <div class="stat-label">すべて</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="hr">
+
+<!-- 名画収集館 -->
+<section class="app-sec" id="meiga">
+  <div class="container">
+    <div class="app-wrap">
+      <div class="app-visual">
+        <div class="app-visual-bg" style="background-image:url('images/pearl_bg.jpg')"></div>
+        <div class="card-stack reveal" id="stack-meiga">
+<div class="stack-card">
+  <div class="screen">
+    <div class="ms-wrap">
+      <div class="ms-header">
+        <span class="ms-app-name">名画収集館</span>
+        <div class="ms-header-icons">
+          <div class="ms-ico">✦</div>
+          <div class="ms-ico">≡</div>
+          <div class="ms-ico">⊡</div>
+          <div class="ms-ico">?</div>
+        </div>
+      </div>
+      <div class="ms-counter">8 / 664</div>
+      <div class="ms-canvas">
+        <div class="ms-frame-outer">
+          <div class="ms-frame-inner">
+            <img src="images/pearl.jpg" alt="真珠の耳飾りの少女" class="ms-img">
+          </div>
+        </div>
+      </div>
+      <div class="ms-footer">
+        <div class="ms-foot-info">
+          <div class="ms-foot-title">真珠の耳飾りの少女</div>
+          <div class="ms-foot-artist">ヨハネス・フェルメール · 1665</div>
+        </div>
+        <div class="ms-foot-acts">
+          <div class="ms-foot-icon">↗</div>
+          <div class="ms-foot-share">シェア</div>
+          <div class="ms-foot-icon">♡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="stack-card">
+  <div class="screen">
+    <div class="ms-wrap">
+      <div class="ms-header">
+        <span class="ms-app-name">名画収集館</span>
+        <div class="ms-header-icons">
+          <div class="ms-ico">✦</div>
+          <div class="ms-ico">≡</div>
+          <div class="ms-ico">⊡</div>
+          <div class="ms-ico">?</div>
+        </div>
+      </div>
+      <div class="ms-counter">9 / 664</div>
+      <div class="ms-canvas">
+        <div class="ms-frame-outer">
+          <div class="ms-frame-inner">
+            <img src="images/milkmaid.jpg" alt="牛乳を注ぐ女" class="ms-img">
+          </div>
+        </div>
+      </div>
+      <div class="ms-footer">
+        <div class="ms-foot-info">
+          <div class="ms-foot-title">牛乳を注ぐ女</div>
+          <div class="ms-foot-artist">ヨハネス・フェルメール · 1658</div>
+        </div>
+        <div class="ms-foot-acts">
+          <div class="ms-foot-icon">↗</div>
+          <div class="ms-foot-share">シェア</div>
+          <div class="ms-foot-icon">♡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="stack-card">
+  <div class="screen">
+    <div class="ms-wrap">
+      <div class="ms-header">
+        <span class="ms-app-name">名画収集館</span>
+        <div class="ms-header-icons">
+          <div class="ms-ico">✦</div>
+          <div class="ms-ico">≡</div>
+          <div class="ms-ico">⊡</div>
+          <div class="ms-ico">?</div>
+        </div>
+      </div>
+      <div class="ms-counter">21 / 664</div>
+      <div class="ms-canvas">
+        <div class="ms-frame-outer">
+          <div class="ms-frame-inner">
+            <img src="images/kiss.jpg" alt="接吻" class="ms-img">
+          </div>
+        </div>
+      </div>
+      <div class="ms-footer">
+        <div class="ms-foot-info">
+          <div class="ms-foot-title">接吻</div>
+          <div class="ms-foot-artist">グスタフ・クリムト · 1908</div>
+        </div>
+        <div class="ms-foot-acts">
+          <div class="ms-foot-icon">↗</div>
+          <div class="ms-foot-share">シェア</div>
+          <div class="ms-foot-icon">♡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="stack-card">
+  <div class="screen">
+    <div class="ms-wrap">
+      <div class="ms-header">
+        <span class="ms-app-name">名画収集館</span>
+        <div class="ms-header-icons">
+          <div class="ms-ico">✦</div>
+          <div class="ms-ico">≡</div>
+          <div class="ms-ico">⊡</div>
+          <div class="ms-ico">?</div>
+        </div>
+      </div>
+      <div class="ms-counter">35 / 664</div>
+      <div class="ms-canvas">
+        <div class="ms-frame-outer">
+          <div class="ms-frame-inner">
+            <img src="images/starry.jpg" alt="星月夜" class="ms-img">
+          </div>
+        </div>
+      </div>
+      <div class="ms-footer">
+        <div class="ms-foot-info">
+          <div class="ms-foot-title">星月夜</div>
+          <div class="ms-foot-artist">ファン・ゴッホ · 1889</div>
+        </div>
+        <div class="ms-foot-acts">
+          <div class="ms-foot-icon">↗</div>
+          <div class="ms-foot-share">シェア</div>
+          <div class="ms-foot-icon">♡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="stack-card">
+  <div class="screen">
+    <div class="ms-wrap">
+      <div class="ms-header">
+        <span class="ms-app-name">名画収集館</span>
+        <div class="ms-header-icons">
+          <div class="ms-ico">✦</div>
+          <div class="ms-ico">≡</div>
+          <div class="ms-ico">⊡</div>
+          <div class="ms-ico">?</div>
+        </div>
+      </div>
+      <div class="ms-counter">47 / 664</div>
+      <div class="ms-canvas">
+        <div class="ms-frame-outer">
+          <div class="ms-frame-inner">
+            <img src="images/sunflowers.jpg" alt="ひまわり" class="ms-img">
+          </div>
+        </div>
+      </div>
+      <div class="ms-footer">
+        <div class="ms-foot-info">
+          <div class="ms-foot-title">ひまわり</div>
+          <div class="ms-foot-artist">ファン・ゴッホ · 1888</div>
+        </div>
+        <div class="ms-foot-acts">
+          <div class="ms-foot-icon">↗</div>
+          <div class="ms-foot-share">シェア</div>
+          <div class="ms-foot-icon">♡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          <div class="swipe-hint" aria-hidden="true">
+            <div class="swipe-arrows"><i></i><i></i><i></i></div>
+            <span>クリックで次の画面へ</span>
+          </div>
+        </div>
+      </div>
+      <div class="app-text">
+        <p class="app-num reveal">01</p>
+        <h2 class="app-h2 reveal d1">名画収集館</h2>
+        <p class="app-body reveal d2">
+          スワイプするたびに、知らなかった名画と出会う。
+          フェルメール、ゴッホ、ルノワール——
+          世界の美術館が所蔵するパブリックドメイン作品を、
+          あなたの手のひらで。
+        </p>
+        <ul class="feat reveal d3">
+          <li>世界の名画 600点以上（ARTIC・MET・CMA）</li>
+          <li>気分で選ぶ 11カテゴリフィルター</li>
+          <li>今日の一枚・お気に入り保存</li>
+          <li>Xへのシェア・端末への保存</li>
+          <li>全作品パブリックドメイン・完全無料</li>
+        </ul>
+        <div class="cta reveal d4">
+          <a href="https://meiga.vercel.app" class="btn btn-gold" target="_blank" rel="noopener">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            Web版を開く
+          </a>
+          <div class="btn btn-off"><span class="dot"></span>Google Play 審査中</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gem-row"><div class="l"></div><div class="g"></div><div class="l"></div></div>
+
+<!-- 冒頭収集館 -->
+<section class="app-sec rev" id="boutou">
+  <div class="container">
+    <div class="app-wrap">
+      <div class="app-visual">
+        <div class="app-visual-bg" style="background-image:url('images/silhouette_bg.jpg')"></div>
+        <div class="card-stack reveal" id="stack-boutou">
+<div class="stack-card">
+  <div class="screen">
+    <div class="bs-wrap">
+      <div class="bs-header">
+        <div class="bs-genre-tag">純文学</div>
+        <div class="bs-header-icons">
+          <div class="bs-ico">📚</div>
+          <div class="bs-ico">≡</div>
+        </div>
+      </div>
+      <div class="bs-body">
+        <img src="images/soseki.jpg" alt="吾輩は猫である" class="bs-img">
+      </div>
+      <div class="bs-footer">
+        <div class="bs-foot-info">
+          <div class="bs-foot-author">夏目漱石 · 1905</div>
+          <div class="bs-foot-title">『吾輩は猫である』</div>
+        </div>
+        <div class="bs-foot-acts">
+          <div class="bs-foot-btn">原文</div>
+          <div class="bs-foot-btn bs-share">シェア</div>
+          <div class="bs-foot-icon">♡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="stack-card">
+  <div class="screen">
+    <div class="bs-wrap">
+      <div class="bs-header">
+        <div class="bs-genre-tag">純文学</div>
+        <div class="bs-header-icons">
+          <div class="bs-ico">📚</div>
+          <div class="bs-ico">≡</div>
+        </div>
+      </div>
+      <div class="bs-body">
+        <img src="images/akutagawa.jpg" alt="春" class="bs-img">
+      </div>
+      <div class="bs-footer">
+        <div class="bs-foot-info">
+          <div class="bs-foot-author">芥川龍之介 · 1925</div>
+          <div class="bs-foot-title">『春』</div>
+        </div>
+        <div class="bs-foot-acts">
+          <div class="bs-foot-btn">原文</div>
+          <div class="bs-foot-btn bs-share">シェア</div>
+          <div class="bs-foot-icon">♡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="stack-card">
+  <div class="screen">
+    <div class="bs-wrap">
+      <div class="bs-header">
+        <div class="bs-genre-tag">探偵・推理</div>
+        <div class="bs-header-icons">
+          <div class="bs-ico">📚</div>
+          <div class="bs-ico">≡</div>
+        </div>
+      </div>
+      <div class="bs-body">
+        <img src="images/ranpo.jpg" alt="悪霊" class="bs-img">
+      </div>
+      <div class="bs-footer">
+        <div class="bs-foot-info">
+          <div class="bs-foot-author">江戸川乱歩 · 1933</div>
+          <div class="bs-foot-title">『悪霊』</div>
+        </div>
+        <div class="bs-foot-acts">
+          <div class="bs-foot-btn">原文</div>
+          <div class="bs-foot-btn bs-share">シェア</div>
+          <div class="bs-foot-icon">♡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="stack-card">
+  <div class="screen">
+    <div class="bs-wrap">
+      <div class="bs-header">
+        <div class="bs-genre-tag">幻想・耽美</div>
+        <div class="bs-header-icons">
+          <div class="bs-ico">📚</div>
+          <div class="bs-ico">≡</div>
+        </div>
+      </div>
+      <div class="bs-body">
+        <img src="images/miyazawa.jpg" alt="山男の四月" class="bs-img">
+      </div>
+      <div class="bs-footer">
+        <div class="bs-foot-info">
+          <div class="bs-foot-author">宮沢賢治 · 1933</div>
+          <div class="bs-foot-title">『山男の四月』</div>
+        </div>
+        <div class="bs-foot-acts">
+          <div class="bs-foot-btn">原文</div>
+          <div class="bs-foot-btn bs-share">シェア</div>
+          <div class="bs-foot-icon">♡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          <div class="swipe-hint" aria-hidden="true">
+            <div class="swipe-arrows"><i></i><i></i><i></i></div>
+            <span>クリックで次の画面へ</span>
+          </div>
+        </div>
+      </div>
+      <div class="app-text">
+        <p class="app-num reveal">02</p>
+        <h2 class="app-h2 reveal d1">冒頭収集館</h2>
+        <p class="app-body reveal d2">
+          「吾輩は猫である。名前はまだない。」<br>
+          一行目で、物語は始まる。<br>
+          青空文庫の名作文学から冒頭だけを集め、
+          縦書きでスワイプして読む、新しい読書体験。
+        </p>
+        <ul class="feat reveal d3">
+          <li>名作文学の冒頭 500本以上を収録</li>
+          <li>縦書き表示で読む日本語の美しさ</li>
+          <li>スワイプで次の作品へ</li>
+          <li>気になった作品はそのまま全文へ</li>
+          <li>全作品青空文庫・完全無料</li>
+        </ul>
+        <div class="cta reveal d4">
+          <a href="https://boutou-shuushukan.vercel.app" class="btn btn-gold" target="_blank" rel="noopener">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            Web版で読む
+          </a>
+          <div class="btn btn-off"><span class="dot"></span>Google Play 近日公開</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<footer>
+  <div class="f-left">
+    <div class="f-brand">収集館シリーズ</div>
+    <p class="f-copy">
+      © memetomamoru &nbsp;／&nbsp;
+      <a href="https://note.com/memetomamoru" target="_blank" rel="noopener">note</a>
+    </p>
+  </div>
+  <div class="f-right">
+    <a href="https://meiga.vercel.app" target="_blank" rel="noopener">名画収集館</a>
+    <a href="https://boutou-shuushukan.vercel.app" target="_blank" rel="noopener">冒頭収集館</a>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('solid', window.scrollY > 40);
+}, {passive:true});
+
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); }
+  });
+}, {threshold:.1,rootMargin:'0px 0px -24px 0px'});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+function initStack(stackEl) {
+  stackEl.addEventListener('click', () => {
+    const cards = Array.from(stackEl.querySelectorAll('.stack-card'));
+    const top = cards[cards.length - 1];
+    top.style.transition = 'transform .45s cubic-bezier(.22,1,.36,1), opacity .3s';
+    top.style.transform = 'rotate(-12deg) translateX(-130%) translateY(-8%) scale(.95)';
+    top.style.opacity = '0';
+    setTimeout(() => {
+      stackEl.insertBefore(top, cards[0]);
+      top.style.transition = 'none';
+      const total = cards.length;
+      const updated = Array.from(stackEl.querySelectorAll('.stack-card'));
+      updated.forEach((c, i) => {
+        const fromTop = total - 1 - i;
+        if(fromTop === 0){ c.style.transform='rotate(0) translateX(0) translateY(0) scale(1)'; c.style.opacity='1'; c.style.zIndex=String(total); }
+        else if(fromTop === 1){ c.style.transform='rotate(3deg) translateX(18px) translateY(5px) scale(.96)'; c.style.opacity='.75'; c.style.zIndex=String(total-1); }
+        else if(fromTop === 2){ c.style.transform='rotate(6deg) translateX(38px) translateY(10px) scale(.91)'; c.style.opacity='.5'; c.style.zIndex=String(total-2); }
+        else{ c.style.transform='rotate(8deg) translateX(52px) translateY(14px) scale(.87)'; c.style.opacity='0'; c.style.zIndex='1'; }
+        requestAnimationFrame(() => requestAnimationFrame(() => { c.style.transition=''; }));
+      });
+    }, 400);
+  });
+}
+document.querySelectorAll('.card-stack').forEach(initStack);
+</script>
+</body>
+</html>
