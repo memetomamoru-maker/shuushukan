@@ -74,12 +74,12 @@ body::after{
    HERO
 ════════════════════════════ */
 .hero{
-  position:relative;height:100vh;height:100dvh;min-height:600px;
+  position:relative;height:100vh;min-height:600px;max-height:-webkit-fill-available;
   display:grid;grid-template-columns:1fr 1fr;overflow:hidden;
   /* iOS Safariでスクロール時に画像が膨張しないよう固定 */
   transform:translateZ(0);
 }
-.hero-half{position:relative;overflow:hidden;transform:translateZ(0);}
+.hero-half{position:relative;overflow:hidden;}
 .hero-half img{width:100%;height:100%;object-fit:cover;display:block;-webkit-backface-visibility:hidden;backface-visibility:hidden;}
 .hero-half:first-child img{object-position:center 15%;filter:brightness(.48) saturate(.8);}
 .hero-half:first-child::after{
@@ -1147,6 +1147,20 @@ const isTouch = window.matchMedia('(pointer: coarse)').matches;
 document.querySelectorAll('.hint-label').forEach(el => {
   el.textContent = isTouch ? 'タップで次の画面へ' : 'クリックで次の画面へ';
 });
+
+/* LINE WebView ガクガク対策 */
+(function() {
+  var hero = document.querySelector('.hero');
+  if (!hero) return;
+  var h = window.innerHeight;
+  hero.style.height = h + 'px';
+  // リサイズ時も固定（orientationchangeのみ許可）
+  window.addEventListener('orientationchange', function() {
+    setTimeout(function() {
+      hero.style.height = window.innerHeight + 'px';
+    }, 300);
+  });
+})();
 
 /* NAV */
 const nav = document.getElementById('nav');
