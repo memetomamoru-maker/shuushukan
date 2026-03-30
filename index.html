@@ -74,12 +74,12 @@ body::after{
    HERO
 ════════════════════════════ */
 .hero{
-  position:relative;height:100vh;height:100svh;min-height:600px;max-height:-webkit-fill-available;
+  position:relative;height:100vh;height:100dvh;min-height:600px;
   display:grid;grid-template-columns:1fr 1fr;overflow:hidden;
   /* iOS Safariでスクロール時に画像が膨張しないよう固定 */
   transform:translateZ(0);
 }
-.hero-half{position:relative;overflow:hidden;}
+.hero-half{position:relative;overflow:hidden;transform:translateZ(0);}
 .hero-half img{width:100%;height:100%;object-fit:cover;display:block;-webkit-backface-visibility:hidden;backface-visibility:hidden;}
 .hero-half:first-child img{object-position:center 15%;filter:brightness(.48) saturate(.8);}
 .hero-half:first-child::after{
