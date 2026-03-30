@@ -80,16 +80,16 @@ body::after{
   transform:translateZ(0);
 }
 .hero-half{position:relative;overflow:hidden;}
-.hero-half img{width:100%;height:100%;object-fit:cover;display:block;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
-.hero-half:first-child img{object-position:center 15%;filter:brightness(.48) saturate(.8);}
+.hero-half img{width:100%;height:100%;object-fit:cover;display:block;will-change:transform;}
+.hero-half:first-child img{object-position:center 15%;}
 .hero-half:first-child::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(to right,rgba(13,11,8,.1) 0%,rgba(13,11,8,.72) 100%);
+  background:linear-gradient(to right,rgba(13,11,8,.3) 0%,rgba(13,11,8,.82) 100%);
 }
-.hero-half:last-child img{object-position:center;filter:brightness(.44) saturate(.65);}
+.hero-half:last-child img{object-position:center;}
 .hero-half:last-child::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(to left,rgba(13,11,8,.1) 0%,rgba(13,11,8,.72) 100%);
+  background:linear-gradient(to left,rgba(13,11,8,.3) 0%,rgba(13,11,8,.82) 100%);
 }
 /* 中央線：scrollに接続 */
 .hero-center-line{
@@ -115,6 +115,7 @@ body::after{
   padding:7px 18px;
   border:1px solid rgba(201,168,76,.45);
   background:rgba(13,11,8,.55);
+  backdrop-filter:blur(4px);
   margin-bottom:28px;
   opacity:0;animation:fadeUp .9s var(--ease) .15s forwards;
 display:flex;align-items:center;gap:10px;}
@@ -181,10 +182,10 @@ display:flex;align-items:center;gap:10px;}
   position:relative;overflow:hidden;
 }
 .scroll-thumb{
-  position:absolute;inset:0 0 auto 0;
+  position:absolute;top:0;left:0;right:0;
   height:40%;background:var(--gold);
-  animation:scrollDownY 2s ease-in-out 1.8s infinite;
-  will-change:transform;
+  animation:scrollDown 2s ease-in-out 1.8s infinite;
+  will-change:top;
 }
 
 /* ══ SHARED ══ */
@@ -500,7 +501,7 @@ footer{
    KEYFRAMES
 ════════════════════════════ */
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
-@keyframes scrollDownY{0%{transform:translateY(-140%);}100%{transform:translateY(250%);}}
+@keyframes scrollDown{0%{top:-40%;}100%{top:100%;}}
 @keyframes hintPulse{0%,100%{opacity:0;}40%,60%{opacity:1;}}
 @keyframes arrowFlow{
   0%{opacity:0;transform:rotate(-45deg) translate(-2px,-2px);}
@@ -587,22 +588,6 @@ footer{
   box-shadow:0 0 0 1px rgba(201,168,76,.38),0 52px 96px rgba(0,0,0,.8);
 }
 
-/* ════ prefers-reduced-motion ════ */
-@media(prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto;}
-  *,*::before,*::after{animation:none!important;transition:none!important;}
-}
-/* ════ focus-visible ════ */
-.card-stack:focus-visible,
-.btn:focus-visible,
-.nav-links a:focus-visible,
-.hero-app-link:focus-visible{
-  outline:2px solid var(--gold);outline-offset:4px;
-}
-/* ════ モバイルでノイズをオフ ════ */
-@media(max-width:767px){
-  body::after{display:none;}
-}
 </style>
 </head>
 <body>
@@ -632,7 +617,7 @@ footer{
 <!-- HERO -->
 <section class="hero" aria-label="ヒーロー">
   <div class="hero-half"><img src="pearl.jpg" alt="真珠の耳飾りの少女"></div>
-  <div class="hero-half"><img src="silhouette.jpg" alt="読書するシルエット"></div>
+  <div class="hero-half"><img src="silhouette_bg.jpg" alt="読書するシルエット"></div>
   <div class="hero-center-line" aria-hidden="true"></div>
   <div class="hero-body">
     <p class="hero-kicker"><span>収集館シリーズ</span></p>
@@ -642,7 +627,7 @@ footer{
     </h1>
     <p class="hero-lead">
       名画と出会い、文学に触れる。<br>
-      600点を超える名画と、500を超える文学冒頭が<br>
+      600点を超える名画と、数百の文学冒頭が<br>
       あなたを待っている。
     </p>
     <div class="hero-apps">
@@ -678,7 +663,7 @@ footer{
       パブリックドメインの名作だけを集めた、<br>
       完全無料のアプリシリーズです。<br>
       スワイプするたびに新しい世界と出会い、<br>
-      日常のどこかで、美しいものとふと出会う。
+      日常のどこかで、美しいものと出会い直す。
     </p>
     <div class="intro-stats">
       <div class="stat">
@@ -887,9 +872,10 @@ footer{
         <p class="app-num reveal">01</p>
         <h2 class="app-h2 reveal d1">名画収集館</h2>
         <p class="app-body reveal d2">
-          スワイプするたびに、知らなかった名画と出会う。<br>
-          フェルメール、ゴッホ、ルノワール——<br>
-          世界の美術館が所蔵するパブリックドメイン作品を、あなたの手のひらで。
+          スワイプするたびに、知らなかった名画と出会う。
+          フェルメール、ゴッホ、ルノワール——
+          世界の美術館が所蔵するパブリックドメイン作品を、
+          あなたの手のひらで。
         </p>
         <ul class="feat reveal d3">
           <li>世界の名画 600点以上（ARTIC・MET・CMA）</li>
@@ -1040,14 +1026,14 @@ footer{
         <p class="app-body reveal d2">
           「吾輩は猫である。名前はまだない。」<br>
           一行目で、物語は始まる。<br>
-          青空文庫の名作文学から冒頭だけを集め、<br>
-          スワイプして出会い、縦書きで味わう——新しい読書体験。
+          青空文庫の名作文学から冒頭だけを集め、
+          縦書きでスワイプして読む、新しい読書体験。
         </p>
         <ul class="feat reveal d3">
           <li>名作文学の冒頭 500本以上を収録</li>
-          <li>縦書きで味わう、日本語の美しさ</li>
+          <li>縦書き表示で読む日本語の美しさ</li>
           <li>スワイプで次の作品へ</li>
-          <li>全文リンクつき・青空文庫へ直結</li>
+          <li>気になった作品はそのまま全文へ</li>
           <li>全作品青空文庫・完全無料</li>
         </ul>
         <div class="cta reveal d4">
@@ -1079,18 +1065,21 @@ footer{
 </footer>
 
 <script>
-/* ヒントラベル：PC=クリック / タッチ=タップ（Surface等の2-in-1対応） */
-const mqCoarse  = window.matchMedia('(any-pointer: coarse)');
-const mqNoHover = window.matchMedia('(hover: none)');
+/* ヒントラベル：PC=クリック / タッチ=タップ
+   LINEブラウザ対策：touchstart発火後に再判定 */
 function updateHintLabels() {
-  const touchLike = mqCoarse.matches || mqNoHover.matches || navigator.maxTouchPoints > 0;
+  const touchLike =
+    window.matchMedia('(any-pointer: coarse)').matches ||
+    window.matchMedia('(hover: none)').matches ||
+    navigator.maxTouchPoints > 0 ||
+    ('ontouchstart' in window);
   document.querySelectorAll('.hint-label').forEach(el => {
-    el.textContent = touchLike ? 'タップで次の画面へ' : 'クリックで次の画面へ';
+    el.textContent = touchLike ? 'タップして次の画面へ' : 'クリックで次の画面へ';
   });
 }
 updateHintLabels();
-mqCoarse.addEventListener?.('change', updateHintLabels);
-mqNoHover.addEventListener?.('change', updateHintLabels);
+window.addEventListener('touchstart', updateHintLabels, {once:true, passive:true});
+window.matchMedia('(any-pointer: coarse)').addEventListener?.('change', updateHintLabels);
 
 /* NAV */
 const nav = document.getElementById('nav');
