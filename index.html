@@ -76,9 +76,11 @@ body::after{
 .hero{
   position:relative;height:100vh;height:100svh;min-height:600px;
   display:grid;grid-template-columns:1fr 1fr;overflow:hidden;
+  /* iOS Safariでスクロール時に画像が膨張しないよう固定 */
+  transform:translateZ(0);
 }
 .hero-half{position:relative;overflow:hidden;}
-.hero-half img{width:100%;height:100%;object-fit:cover;display:block;}
+.hero-half img{width:100%;height:100%;object-fit:cover;display:block;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
 .hero-half:first-child img{object-position:center 15%;filter:brightness(.48) saturate(.8);}
 .hero-half:first-child::after{
   content:'';position:absolute;inset:0;
@@ -113,7 +115,6 @@ body::after{
   padding:7px 18px;
   border:1px solid rgba(201,168,76,.45);
   background:rgba(13,11,8,.55);
-  backdrop-filter:blur(4px);
   margin-bottom:28px;
   opacity:0;animation:fadeUp .9s var(--ease) .15s forwards;
 display:flex;align-items:center;gap:10px;}
@@ -180,9 +181,10 @@ display:flex;align-items:center;gap:10px;}
   position:relative;overflow:hidden;
 }
 .scroll-thumb{
-  position:absolute;top:0;left:0;right:0;
+  position:absolute;inset:0 0 auto 0;
   height:40%;background:var(--gold);
-  animation:scrollDown 2s ease-in-out 1.8s infinite;
+  animation:scrollDownY 2s ease-in-out 1.8s infinite;
+  will-change:transform;
 }
 
 /* ══ SHARED ══ */
@@ -218,7 +220,7 @@ display:flex;align-items:center;gap:10px;}
 .intro-right{}
 .intro-p{
   font-size:14px;font-weight:300;letter-spacing:.1em;
-  line-height:2.9;color:var(--body);
+  line-height:2.4;color:var(--body);
   margin-bottom:28px;
 }
 .intro-stats{
@@ -284,6 +286,7 @@ display:flex;align-items:center;gap:10px;}
   position:absolute;bottom:-28px;left:0;
   display:flex;align-items:center;gap:8px;
   animation:hintPulse 2.4s ease-in-out 1s infinite;
+  will-change:opacity;
 }
 .swipe-hint span{font-size:11px;font-weight:300;letter-spacing:.18em;color:var(--body);}
 .swipe-arrows{display:flex;gap:3px;}
@@ -366,7 +369,7 @@ display:flex;align-items:center;gap:10px;}
   padding:10px 14px 8px;
   display:flex;align-items:center;justify-content:space-between;
   flex-shrink:0;
-  background:rgba(0,0,0,.35);backdrop-filter:blur(4px);
+  background:rgba(0,0,0,.5);
 }
 .bs-genre-tag{
   font-size:9px;font-weight:400;letter-spacing:.1em;
@@ -412,7 +415,7 @@ display:flex;align-items:center;gap:10px;}
   padding:8px 14px;
   display:flex;align-items:center;justify-content:space-between;
   flex-shrink:0;border-top:1px solid rgba(201,168,76,.12);
-  background:rgba(0,0,0,.35);backdrop-filter:blur(4px);
+  background:rgba(0,0,0,.5);
 }
 .bs-foot-info{flex:1;min-width:0;}
 .bs-foot-author{font-size:9px;font-weight:500;letter-spacing:.1em;color:var(--gold);margin-bottom:2px;}
@@ -497,7 +500,7 @@ footer{
    KEYFRAMES
 ════════════════════════════ */
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
-@keyframes scrollDown{0%{top:-40%;}100%{top:100%;}}
+@keyframes scrollDownY{0%{transform:translateY(-140%);}100%{transform:translateY(250%);}}
 @keyframes hintPulse{0%,100%{opacity:0;}40%,60%{opacity:1;}}
 @keyframes arrowFlow{
   0%{opacity:0;transform:rotate(-45deg) translate(-2px,-2px);}
@@ -584,6 +587,22 @@ footer{
   box-shadow:0 0 0 1px rgba(201,168,76,.38),0 52px 96px rgba(0,0,0,.8);
 }
 
+/* ════ prefers-reduced-motion ════ */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation:none!important;transition:none!important;}
+}
+/* ════ focus-visible ════ */
+.card-stack:focus-visible,
+.btn:focus-visible,
+.nav-links a:focus-visible,
+.hero-app-link:focus-visible{
+  outline:2px solid var(--gold);outline-offset:4px;
+}
+/* ════ モバイルでノイズをオフ ════ */
+@media(max-width:767px){
+  body::after{display:none;}
+}
 </style>
 </head>
 <body>
@@ -616,25 +635,14 @@ footer{
   <div class="hero-half"><img src="silhouette.jpg" alt="読書するシルエット"></div>
   <div class="hero-center-line" aria-hidden="true"></div>
   <div class="hero-body">
-    <p class="hero-kicker"><svg width="28" height="24" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <path d="M16 2L30 10H2L16 2Z" stroke="#c9a84c" stroke-width="1.2" stroke-linejoin="round"/>
-  <circle cx="16" cy="2" r="1.2" fill="#c9a84c"/>
-  <rect x="5"  y="10" width="2" height="13" fill="#c9a84c" rx="0.4"/>
-  <rect x="11" y="10" width="2" height="13" fill="#c9a84c" rx="0.4"/>
-  <rect x="19" y="10" width="2" height="13" fill="#c9a84c" rx="0.4"/>
-  <rect x="25" y="10" width="2" height="13" fill="#c9a84c" rx="0.4"/>
-  <path d="M13 23 L13 18.5 Q16 15 19 18.5 L19 23" stroke="#c9a84c" stroke-width="1.2" fill="none"/>
-  <line x1="2"  y1="23" x2="30" y2="23" stroke="#c9a84c" stroke-width="1.2"/>
-  <line x1="0"  y1="27" x2="32" y2="27" stroke="#c9a84c" stroke-width="1.2"/>
-  <line x1="1"  y1="25" x2="31" y2="25" stroke="#c9a84c" stroke-width="0.7" stroke-opacity="0.55"/>
-</svg><span>収集館シリーズ</span></p>
+    <p class="hero-kicker"><span>収集館シリーズ</span></p>
     <h1 class="hero-h1">
       スワイプするたびに、
       <span>世界が広がる。</span>
     </h1>
     <p class="hero-lead">
       名画と出会い、文学に触れる。<br>
-      600点を超える名画と、数百の文学冒頭が<br>
+      600点を超える名画と、500を超える文学冒頭が<br>
       あなたを待っている。
     </p>
     <div class="hero-apps">
@@ -670,7 +678,7 @@ footer{
       パブリックドメインの名作だけを集めた、<br>
       完全無料のアプリシリーズです。<br>
       スワイプするたびに新しい世界と出会い、<br>
-      日常のどこかで、美しいものと出会い直す。
+      日常のどこかで、美しいものとふと出会う。
     </p>
     <div class="intro-stats">
       <div class="stat">
@@ -879,10 +887,9 @@ footer{
         <p class="app-num reveal">01</p>
         <h2 class="app-h2 reveal d1">名画収集館</h2>
         <p class="app-body reveal d2">
-          スワイプするたびに、知らなかった名画と出会う。
-          フェルメール、ゴッホ、ルノワール——
-          世界の美術館が所蔵するパブリックドメイン作品を、
-          あなたの手のひらで。
+          スワイプするたびに、知らなかった名画と出会う。<br>
+          フェルメール、ゴッホ、ルノワール——<br>
+          世界の美術館が所蔵するパブリックドメイン作品を、あなたの手のひらで。
         </p>
         <ul class="feat reveal d3">
           <li>世界の名画 600点以上（ARTIC・MET・CMA）</li>
@@ -896,7 +903,7 @@ footer{
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
             Web版を開く
           </a>
-          <div class="btn btn-off"><span class="dot"></span>Google Play 審査中</div>
+          <div class="btn btn-off"><span class="dot"></span>Google Play 近日公開</div>
         </div>
       </div>
     </div>
@@ -1033,14 +1040,14 @@ footer{
         <p class="app-body reveal d2">
           「吾輩は猫である。名前はまだない。」<br>
           一行目で、物語は始まる。<br>
-          青空文庫の名作文学から冒頭だけを集め、
-          縦書きでスワイプして読む、新しい読書体験。
+          青空文庫の名作文学から冒頭だけを集め、<br>
+          スワイプして出会い、縦書きで味わう——新しい読書体験。
         </p>
         <ul class="feat reveal d3">
           <li>名作文学の冒頭 500本以上を収録</li>
-          <li>縦書き表示で読む日本語の美しさ</li>
+          <li>縦書きで味わう、日本語の美しさ</li>
           <li>スワイプで次の作品へ</li>
-          <li>気になった作品はそのまま全文へ</li>
+          <li>全文リンクつき・青空文庫へ直結</li>
           <li>全作品青空文庫・完全無料</li>
         </ul>
         <div class="cta reveal d4">
@@ -1072,11 +1079,18 @@ footer{
 </footer>
 
 <script>
-/* ヒントラベル：PC=クリック / タッチ=タップ */
-const isTouch = window.matchMedia('(pointer: coarse)').matches;
-document.querySelectorAll('.hint-label').forEach(el => {
-  el.textContent = isTouch ? 'タップで次の画面へ' : 'クリックで次の画面へ';
-});
+/* ヒントラベル：PC=クリック / タッチ=タップ（Surface等の2-in-1対応） */
+const mqCoarse  = window.matchMedia('(any-pointer: coarse)');
+const mqNoHover = window.matchMedia('(hover: none)');
+function updateHintLabels() {
+  const touchLike = mqCoarse.matches || mqNoHover.matches || navigator.maxTouchPoints > 0;
+  document.querySelectorAll('.hint-label').forEach(el => {
+    el.textContent = touchLike ? 'タップで次の画面へ' : 'クリックで次の画面へ';
+  });
+}
+updateHintLabels();
+mqCoarse.addEventListener?.('change', updateHintLabels);
+mqNoHover.addEventListener?.('change', updateHintLabels);
 
 /* NAV */
 const nav = document.getElementById('nav');
