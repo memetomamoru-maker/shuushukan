@@ -74,22 +74,24 @@ body::after{
    HERO
 ════════════════════════════ */
 .hero{
-  position:relative;height:100vh;height:100svh;min-height:600px;
+  position:relative;
+  height:100vh;
+  height:calc(var(--vh,1vh)*100);
+  min-height:600px;
   display:grid;grid-template-columns:1fr 1fr;overflow:hidden;
-  /* iOS Safariでスクロール時に画像が膨張しないよう固定 */
   transform:translateZ(0);
 }
 .hero-half{position:relative;overflow:hidden;}
-.hero-half img{width:100%;height:100%;object-fit:cover;display:block;will-change:transform;}
-.hero-half:first-child img{object-position:center 15%;filter:brightness(.48) saturate(.8);}
+.hero-half img{width:100%;height:100%;object-fit:cover;display:block;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+.hero-half:first-child img{object-position:center 15%;}
 .hero-half:first-child::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(to right,rgba(13,11,8,.1) 0%,rgba(13,11,8,.72) 100%);
+  background:linear-gradient(to right,rgba(13,11,8,.3) 0%,rgba(13,11,8,.82) 100%);
 }
-.hero-half:last-child img{object-position:center;filter:brightness(.44) saturate(.65);}
+.hero-half:last-child img{object-position:center;}
 .hero-half:last-child::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(to left,rgba(13,11,8,.1) 0%,rgba(13,11,8,.72) 100%);
+  background:linear-gradient(to left,rgba(13,11,8,.3) 0%,rgba(13,11,8,.82) 100%);
 }
 /* 中央線：scrollに接続 */
 .hero-center-line{
@@ -171,12 +173,7 @@ body::after{
   width:1px;height:56px;background:rgba(201,168,76,.25);
   position:relative;overflow:hidden;
 }
-.scroll-thumb{
-  position:absolute;top:0;left:0;right:0;
-  height:40%;background:var(--gold);
-  animation:scrollDown 2s ease-in-out 1.8s infinite;
-  will-change:top;
-}
+.scroll-thumb{position:absolute;inset:0 0 auto 0;height:40%;background:var(--gold);animation:scrollDownY 2s ease-in-out 1.8s infinite;will-change:transform;}
 
 /* ══ SHARED ══ */
 .hr{border:none;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,.2),transparent);}
@@ -491,7 +488,7 @@ footer{
    KEYFRAMES
 ════════════════════════════ */
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
-@keyframes scrollDown{0%{top:-40%;}100%{top:100%;}}
+@keyframes scrollDownY{0%{transform:translateY(-140%);}100%{transform:translateY(250%);}}
 @keyframes hintPulse{0%,100%{opacity:0;}40%,60%{opacity:1;}}
 @keyframes arrowFlow{
   0%{opacity:0;transform:rotate(-45deg) translate(-2px,-2px);}
@@ -606,6 +603,22 @@ footer{
   .share-btns{flex-direction:column;width:100%;max-width:280px;}
   .share-btn{justify-content:center;}
 }
+/* ════ prefers-reduced-motion ════ */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation:none!important;transition:none!important;}
+}
+/* ════ focus-visible ════ */
+.card-stack:focus-visible,
+.btn:focus-visible,
+.nav-links a:focus-visible,
+.hero-app-link:focus-visible{
+  outline:2px solid var(--gold);outline-offset:4px;
+}
+/* ════ モバイルでノイズをオフ ════ */
+@media(max-width:767px){
+  body::after{display:none;}
+}
 </style>
 </head>
 <body>
@@ -644,7 +657,7 @@ footer{
     </h1>
     <p class="hero-lead">
       名画と出会い、文学に触れる。<br>
-      600点を超える名画と、数百の文学冒頭が<br>
+      600点を超える名画と、500を超える文学冒頭が<br>
       あなたを待っている。
     </p>
     <div class="hero-apps">
@@ -680,7 +693,7 @@ footer{
       パブリックドメインの名作だけを集めた、<br>
       完全無料のアプリシリーズです。<br>
       スワイプするたびに新しい世界と出会い、<br>
-      日常のどこかで、美しいものと出会い直す。
+      日常のどこかで、美しいものとふと出会う。
     </p>
     <div class="intro-stats">
       <div class="stat">
@@ -1043,14 +1056,14 @@ footer{
         <p class="app-body reveal d2">
           「吾輩は猫である。名前はまだない。」<br>
           一行目で、物語は始まる。<br>
-          青空文庫の名作文学から冒頭だけを集め、
-          縦書きでスワイプして読む、新しい読書体験。
+          青空文庫の名作文学から冒頭だけを集め、<br>
+          スワイプして出会い、縦書きで味わう——新しい読書体験。
         </p>
         <ul class="feat reveal d3">
           <li>名作文学の冒頭 500本以上を収録</li>
-          <li>縦書き表示で読む日本語の美しさ</li>
+          <li>縦書きで味わう、日本語の美しさ</li>
           <li>スワイプで次の作品へ</li>
-          <li>気になった作品はそのまま全文へ</li>
+          <li>全文リンクつき・青空文庫へ直結</li>
           <li>全作品青空文庫・完全無料</li>
         </ul>
         <div class="cta reveal d4">
@@ -1097,11 +1110,30 @@ footer{
 </footer>
 
 <script>
-/* ヒントラベル：PC=クリック / タッチ=タップ */
-const isTouch = window.matchMedia('(pointer: coarse)').matches;
-document.querySelectorAll('.hint-label').forEach(el => {
-  el.textContent = isTouch ? 'タップで次の画面へ' : 'クリックで次の画面へ';
-});
+/* --vh固定：LINEブラウザのUIバー伸縮でheroが膨張するのを防ぐ
+   初回のinnerHeightを記録して固定。スクロールでは更新しない */
+(function(){
+  function setVh(){
+    document.documentElement.style.setProperty('--vh', window.innerHeight*0.01+'px');
+  }
+  setVh();
+  window.addEventListener('orientationchange',function(){setTimeout(setVh,200);},{passive:true});
+})();
+
+/* ヒントラベル：PC=クリック / タッチ=タップ（LINE等WebView対応） */
+function updateHintLabels() {
+  var touchLike =
+    window.matchMedia('(any-pointer: coarse)').matches ||
+    window.matchMedia('(hover: none)').matches ||
+    navigator.maxTouchPoints > 0 ||
+    ('ontouchstart' in window);
+  document.querySelectorAll('.hint-label').forEach(function(el) {
+    el.textContent = touchLike ? 'タップして次の画面へ' : 'クリックで次の画面へ';
+  });
+}
+updateHintLabels();
+window.addEventListener('touchstart', updateHintLabels, {once:true, passive:true});
+window.matchMedia('(any-pointer: coarse)').addEventListener?.('change', updateHintLabels);
 
 /* NAV */
 const nav = document.getElementById('nav');
