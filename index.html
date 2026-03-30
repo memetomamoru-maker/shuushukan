@@ -74,22 +74,24 @@ body::after{
    HERO
 ════════════════════════════ */
 .hero{
-  position:relative;height:100vh;height:100svh;min-height:600px;
+  position:relative;
+  height:100vh;           /* フォールバック */
+  height:calc(var(--vh, 1vh) * 100); /* JS補正値 */
+  min-height:600px;
   display:grid;grid-template-columns:1fr 1fr;overflow:hidden;
-  /* iOS Safariでスクロール時に画像が膨張しないよう固定 */
   transform:translateZ(0);
 }
 .hero-half{position:relative;overflow:hidden;}
 .hero-half img{width:100%;height:100%;object-fit:cover;display:block;will-change:transform;}
-.hero-half:first-child img{object-position:center 15%;}
+.hero-half:first-child img{object-position:center 15%;filter:brightness(.48) saturate(.8);}
 .hero-half:first-child::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(to right,rgba(13,11,8,.3) 0%,rgba(13,11,8,.82) 100%);
+  background:linear-gradient(to right,rgba(13,11,8,.1) 0%,rgba(13,11,8,.72) 100%);
 }
-.hero-half:last-child img{object-position:center;}
+.hero-half:last-child img{object-position:center;filter:brightness(.44) saturate(.65);}
 .hero-half:last-child::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(to left,rgba(13,11,8,.3) 0%,rgba(13,11,8,.82) 100%);
+  background:linear-gradient(to left,rgba(13,11,8,.1) 0%,rgba(13,11,8,.72) 100%);
 }
 /* 中央線：scrollに接続 */
 .hero-center-line{
@@ -617,7 +619,7 @@ footer{
 <!-- HERO -->
 <section class="hero" aria-label="ヒーロー">
   <div class="hero-half"><img src="pearl.jpg" alt="真珠の耳飾りの少女"></div>
-  <div class="hero-half"><img src="silhouette_bg.jpg" alt="読書するシルエット"></div>
+  <div class="hero-half"><img src="silhouette.jpg" alt="読書するシルエット"></div>
   <div class="hero-center-line" aria-hidden="true"></div>
   <div class="hero-body">
     <p class="hero-kicker"><span>収集館シリーズ</span></p>
@@ -1065,21 +1067,25 @@ footer{
 </footer>
 
 <script>
-/* ヒントラベル：PC=クリック / タッチ=タップ
-   LINEブラウザ対策：touchstart発火後に再判定 */
-function updateHintLabels() {
-  const touchLike =
-    window.matchMedia('(any-pointer: coarse)').matches ||
-    window.matchMedia('(hover: none)').matches ||
-    navigator.maxTouchPoints > 0 ||
-    ('ontouchstart' in window);
-  document.querySelectorAll('.hint-label').forEach(el => {
-    el.textContent = touchLike ? 'タップして次の画面へ' : 'クリックで次の画面へ';
-  });
-}
-updateHintLabels();
-window.addEventListener('touchstart', updateHintLabels, {once:true, passive:true});
-window.matchMedia('(any-pointer: coarse)').addEventListener?.('change', updateHintLabels);
+/* --vh 固定：LINEブラウザのUIバー伸縮でheroが膨張するのを防ぐ
+   初回のinnerHeightを記録して固定。スクロールに追従させない */
+(function() {
+  var vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', vh + 'px');
+  /* orientationchange時だけ更新（スクロールでは更新しない） */
+  window.addEventListener('orientationchange', function() {
+    setTimeout(function() {
+      var vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', vh + 'px');
+    }, 200);
+  }, {passive: true});
+})();
+
+/* ヒントラベル：PC=クリック / タッチ=タップ */
+const isTouch = window.matchMedia('(pointer: coarse)').matches;
+document.querySelectorAll('.hint-label').forEach(el => {
+  el.textContent = isTouch ? 'タップで次の画面へ' : 'クリックで次の画面へ';
+});
 
 /* NAV */
 const nav = document.getElementById('nav');
