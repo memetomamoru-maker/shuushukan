@@ -74,11 +74,9 @@ body::after{
    HERO
 ════════════════════════════ */
 .hero{
-  position:relative;
-  height:100vh;           /* フォールバック */
-  height:calc(var(--vh, 1vh) * 100); /* JS補正値 */
-  min-height:600px;
+  position:relative;height:100vh;height:100svh;min-height:600px;
   display:grid;grid-template-columns:1fr 1fr;overflow:hidden;
+  /* iOS Safariでスクロール時に画像が膨張しないよう固定 */
   transform:translateZ(0);
 }
 .hero-half{position:relative;overflow:hidden;}
@@ -110,17 +108,7 @@ body::after{
   padding:80px 40px 100px;text-align:center;
   background:radial-gradient(ellipse 52% 62% at 50% 50%,rgba(13,11,8,.82) 0%,transparent 100%);
 }
-.hero-kicker{
-  font-family:'Shippori Mincho',serif;
-  font-size:12px;font-weight:500;letter-spacing:.36em;
-  color:var(--washi);
-  padding:7px 18px;
-  border:1px solid rgba(201,168,76,.45);
-  background:rgba(13,11,8,.55);
-  backdrop-filter:blur(4px);
-  margin-bottom:28px;
-  opacity:0;animation:fadeUp .9s var(--ease) .15s forwards;
-display:flex;align-items:center;gap:10px;}
+
 .hero-h1{
   font-family:'Shippori Mincho',serif;
   font-size:clamp(34px,5vw,64px);
@@ -590,6 +578,34 @@ footer{
   box-shadow:0 0 0 1px rgba(201,168,76,.38),0 52px 96px rgba(0,0,0,.8);
 }
 
+/* ════ SHARE ════ */
+.share-sec{
+  padding:48px 64px;max-width:1080px;margin:0 auto;
+  display:flex;flex-direction:column;align-items:center;gap:20px;
+  border-top:1px solid var(--border);
+}
+.share-label{
+  font-size:11px;font-weight:300;letter-spacing:.3em;
+  color:var(--sub);
+}
+.share-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.share-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Noto Serif JP',serif;
+  font-size:13px;font-weight:400;letter-spacing:.08em;
+  text-decoration:none;padding:12px 24px;
+  border:1px solid rgba(201,168,76,.3);
+  background:rgba(13,11,8,.6);
+  color:var(--body);
+  transition:all .3s var(--ease);
+}
+.share-btn:hover{border-color:var(--gold);color:var(--washi);transform:translateY(-2px);}
+.share-btn svg{flex-shrink:0;}
+@media(max-width:767px){
+  .share-sec{padding:40px 20px;gap:16px;}
+  .share-btns{flex-direction:column;width:100%;max-width:280px;}
+  .share-btn{justify-content:center;}
+}
 </style>
 </head>
 <body>
@@ -622,7 +638,6 @@ footer{
   <div class="hero-half"><img src="silhouette.jpg" alt="読書するシルエット"></div>
   <div class="hero-center-line" aria-hidden="true"></div>
   <div class="hero-body">
-    <p class="hero-kicker"><span>収集館シリーズ</span></p>
     <h1 class="hero-h1">
       スワイプするたびに、
       <span>世界が広がる。</span>
@@ -1052,6 +1067,20 @@ footer{
 
 <hr class="hr">
 
+<!-- SHARE -->
+<section class="share-sec">
+  <p class="share-label">シェアする</p>
+  <div class="share-btns">
+    <a class="share-btn" id="share-x" href="#" target="_blank" rel="noopener" aria-label="Xでシェア">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.261 5.636 5.903-5.636zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      Xでシェア
+    </a>
+    <a class="share-btn" id="share-line" href="#" target="_blank" rel="noopener" aria-label="LINEでシェア">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+      LINEでシェア
+    </a>
+  </div>
+</section>
 <footer>
   <div class="f-left">
     <div class="f-brand">収集館シリーズ</div>
@@ -1067,20 +1096,6 @@ footer{
 </footer>
 
 <script>
-/* --vh 固定：LINEブラウザのUIバー伸縮でheroが膨張するのを防ぐ
-   初回のinnerHeightを記録して固定。スクロールに追従させない */
-(function() {
-  var vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', vh + 'px');
-  /* orientationchange時だけ更新（スクロールでは更新しない） */
-  window.addEventListener('orientationchange', function() {
-    setTimeout(function() {
-      var vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', vh + 'px');
-    }, 200);
-  }, {passive: true});
-})();
-
 /* ヒントラベル：PC=クリック / タッチ=タップ */
 const isTouch = window.matchMedia('(pointer: coarse)').matches;
 document.querySelectorAll('.hint-label').forEach(el => {
@@ -1214,6 +1229,17 @@ function initStack(el) {
 }
 
 document.querySelectorAll('.card-stack').forEach(initStack);
+
+/* SHARE BUTTONS */
+(function(){
+  var url = encodeURIComponent('https://shuushukan.vercel.app');
+  var text = encodeURIComponent('スワイプするたびに、世界が広がる。名画収集館・冒頭収集館');
+  document.getElementById('share-x').href =
+    'https://twitter.com/intent/tweet?text=' + text + '&url=' + url;
+  document.getElementById('share-line').href =
+    'https://social-plugins.line.me/lineit/share?url=' + url;
+})();
+
 </script>
 </body>
 </html>
