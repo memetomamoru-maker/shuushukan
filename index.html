@@ -468,6 +468,10 @@ body::after{
   font-size:13px;font-weight:300;letter-spacing:.1em;padding:14px 20px;
 }
 .btn-off .dot{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.5;}
+.btn-line{background:transparent;color:#dbb84e;border:1px solid rgba(219,184,78,.45);}
+.btn-line:hover{transform:translateY(-2px);border-color:#dbb84e;box-shadow:0 10px 36px rgba(201,168,76,.18);}
+.env-link{color:#dbb84e;text-decoration:none;border-bottom:1px solid rgba(219,184,78,.35);transition:border-color .3s var(--ease);}
+.env-link:hover{border-color:#dbb84e;}
 
 /* ── GEM DIVIDER ── */
 .gem-row{display:flex;align-items:center;gap:16px;padding:48px 64px;max-width:1080px;margin:0 auto;}
@@ -925,7 +929,10 @@ footer{
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
             Web版を開く
           </a>
-          <div class="btn btn-off"><span class="dot"></span>Google Play 近日公開</div>
+          <a href="https://play.google.com/store/apps/details?id=app.vercel.meiga.twa" class="btn btn-line" target="_blank" rel="noopener">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M4 2.7v18.6c0 .6.7 1 1.2.7l16-9.3c.5-.3.5-1.1 0-1.4L5.2 2c-.5-.3-1.2.1-1.2.7z"/></svg>
+            Google Playで入手
+          </a>
         </div>
       </div>
     </div>
@@ -1109,7 +1116,7 @@ footer{
         <div class="env-label">名画収集館</div>
         <div class="env-detail">
           <div class="env-row"><span class="env-tag env-tag-web">Web</span><span>Chrome / Safari / Firefox 最新版</span></div>
-          <div class="env-row"><span class="env-tag env-tag-android">Android</span><span>Google Play（近日公開）</span></div>
+          <div class="env-row"><span class="env-tag env-tag-android">Android</span><span><a href="https://play.google.com/store/apps/details?id=app.vercel.meiga.twa" class="env-link" target="_blank" rel="noopener">Google Play（公開中）</a></span></div>
           <div class="env-row env-row-coming"><span class="env-tag env-tag-ios">iOS</span><span>App Store（近日公開）</span></div>
         </div>
       </div>
